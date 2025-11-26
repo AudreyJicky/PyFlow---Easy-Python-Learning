@@ -52,8 +52,11 @@ const Download: React.FC = () => {
                     <Globe className="w-16 h-16 mx-auto mb-6 text-purple-500 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{t.web}</h3>
                     <p className="text-slate-400 text-sm mb-6">Browser Access</p>
-                    <button className="w-full py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">
-                        Launch
+                    <button 
+                        onClick={() => window.open(window.location.href, '_blank')}
+                        className="w-full py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
+                    >
+                        {t.launchWeb || 'Open Website'}
                     </button>
                 </div>
             </div>

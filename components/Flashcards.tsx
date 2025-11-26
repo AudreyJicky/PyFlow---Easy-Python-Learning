@@ -114,6 +114,17 @@ const Flashcards: React.FC<FlashcardsProps> = ({ language }) => {
 
     // PRACTICE MODE
     const currentCard = cards[currentIndex];
+    
+    // Level styling
+    let levelColor = "text-blue-500 dark:text-blue-400";
+    let levelBorder = "border-blue-200 dark:border-blue-800";
+    if (level === t.beginner) {
+        levelColor = "text-green-500 dark:text-green-400";
+        levelBorder = "border-green-200 dark:border-green-800";
+    } else if (level === t.advanced) {
+        levelColor = "text-purple-500 dark:text-purple-400";
+        levelBorder = "border-purple-200 dark:border-purple-800";
+    }
 
     return (
         <div className="max-w-xl mx-auto flex flex-col h-[calc(100vh-140px)] justify-center">
@@ -134,8 +145,9 @@ const Flashcards: React.FC<FlashcardsProps> = ({ language }) => {
                 <div className={`w-full h-full relative transform-style-3d transition-all duration-500 ${isFlipped ? 'rotate-y-180' : ''}`}>
                     
                     {/* Front */}
-                    <div className="absolute inset-0 backface-hidden bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-8 text-center transition-colors">
-                        <span className="text-xs font-bold tracking-wider text-blue-500 dark:text-blue-400 uppercase mb-4">{currentCard.category}</span>
+                    <div className={`absolute inset-0 backface-hidden bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 ${levelBorder} flex flex-col items-center justify-center p-8 text-center transition-colors`}>
+                        <span className={`text-xs font-bold tracking-wider ${levelColor} uppercase mb-2`}>{currentCard.category}</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6">{level}</span>
                         <h3 className="text-4xl font-bold text-slate-800 dark:text-white mb-6">{currentCard.concept}</h3>
                         <p className="text-lg text-slate-600 dark:text-slate-300">{currentCard.definition}</p>
                         
@@ -143,8 +155,8 @@ const Flashcards: React.FC<FlashcardsProps> = ({ language }) => {
                     </div>
 
                     {/* Back */}
-                    <div className="absolute inset-0 backface-hidden rotate-y-180 bg-slate-900 rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 text-center text-white">
-                        <span className="text-xs font-bold tracking-wider text-blue-400 uppercase mb-4">{t.syntax} & {t.example}</span>
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 bg-slate-900 rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 text-center text-white border-2 border-slate-700">
+                        <span className={`text-xs font-bold tracking-wider ${levelColor} uppercase mb-4`}>{t.syntax} & {t.example}</span>
                         
                         <div className="w-full bg-black/30 rounded-lg p-3 mb-4 text-left" dir="ltr">
                             <p className="text-xs text-slate-400 mb-1">{t.syntax}:</p>

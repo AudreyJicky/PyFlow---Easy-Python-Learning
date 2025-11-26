@@ -1,8 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
-import { AppView, Language, UserProfile, ThemeMode } from '../types';
+import { AppView, Language, UserProfile, ThemeMode, APP_VERSION } from '../types';
 import { translations } from '../translations';
-import { LayoutDashboard, Layers, MessageCircle, Code2, Menu, X, Terminal, Languages, BookOpen, PenTool, Gamepad2, Moon, Sun, LogOut, Camera, Trophy, Users, Download, Settings } from 'lucide-react';
+import { LayoutDashboard, Layers, MessageCircle, Code2, Menu, X, Terminal, BookOpen, PenTool, Gamepad2, Camera, Trophy, Users, Download, Settings, Search, GraduationCap, FileCheck, Crown, MessageSquarePlus } from 'lucide-react';
+import FeedbackModal from './FeedbackModal';
+import MissionSidebar from './MissionSidebar';
 
 interface LayoutProps {
   currentView: AppView;
@@ -14,18 +15,30 @@ interface LayoutProps {
   onLogout: () => void;
   onThemeChange: (mode: ThemeMode) => void;
   onAvatarChange: (url: string) => void;
+  // Mission Props
+  onClockIn: () => void;
+  onCollectReward: (missionId: string, xpReward: number) => void;
+  showFeedback: boolean;
+  setShowFeedback: (show: boolean) => void;
+  isMissionSidebarOpen: boolean;
+  onCloseMissionSidebar: () => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ 
     currentView, 
     onChangeView, 
     language, 
-    onLanguageChange, 
     children, 
     user, 
     onLogout, 
     onThemeChange,
-    onAvatarChange
+    onAvatarChange,
+    onClockIn,
+    onCollectReward,
+    showFeedback,
+    setShowFeedback,
+    isMissionSidebarOpen,
+    onCloseMissionSidebar
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -40,8 +53,11 @@ const Layout: React.FC<LayoutProps> = ({
 
   const navItems = [
     { id: AppView.DASHBOARD, label: t.nav.dashboard, icon: LayoutDashboard },
+    { id: AppView.COURSE, label: t.nav.course, icon: GraduationCap },
+    { id: AppView.EXAM, label: t.nav.exam, icon: FileCheck },
     { id: AppView.REFERENCE, label: t.nav.reference, icon: BookOpen },
     { id: AppView.GAME, label: t.nav.game, icon: Gamepad2 },
+    { id: AppView.SEARCH, label: t.nav.search, icon: Search },
     { id: AppView.LEADERBOARD, label: t.nav.leaderboard, icon: Trophy },
     { id: AppView.COMMUNITY, label: t.nav.community, icon: Users },
     { id: AppView.NOTEBOOK, label: t.nav.notebook, icon: PenTool },
@@ -49,11 +65,6 @@ const Layout: React.FC<LayoutProps> = ({
     { id: AppView.CHAT, label: t.nav.chat, icon: MessageCircle },
     { id: AppView.ANALYZER, label: t.nav.analyzer, icon: Code2 },
     { id: AppView.DOWNLOAD, label: t.nav.download, icon: Download },
-  ];
-
-  const languages: Language[] = [
-    'English', 'Chinese (Simplified)', 'Malay', 'Japanese', 'Korean', 
-    'Indonesian', 'Thai', 'Vietnamese', 'Myanmar', 'Arabic'
   ];
 
   const avatars = [
@@ -76,6 +87,8 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className={`flex h-screen bg-slate-50 dark:bg-slate-900 overflow-hidden font-sans transition-colors duration-300 ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       
+      {showFeedback && <FeedbackModal language={language} onClose={() => setShowFeedback(false)} />}
+
       {/* Avatar Modal */}
       {showAvatarModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowAvatarModal(false)}>
@@ -97,13 +110,15 @@ const Layout: React.FC<LayoutProps> = ({
           </div>
       )}
 
-      {/* Sidebar for Desktop */}
-      <aside className="hidden md:flex md:w-64 flex-col bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transition-colors duration-300">
-        <div className="p-6 flex items-center space-x-2 border-b border-slate-100 dark:border-slate-700 rtl:space-x-reverse">
-          <div className="bg-blue-500 p-1.5 rounded-lg">
-             <Terminal className="w-6 h-6 text-yellow-300" />
+      {/* 1. Main Navigation Sidebar */}
+      <aside className="hidden md:flex md:w-64 flex-col bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transition-colors duration-300 z-10 relative">
+        <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-700">
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+            <div className="bg-blue-500 p-1.5 rounded-lg">
+                <Terminal className="w-6 h-6 text-yellow-300" />
+            </div>
+            <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">PyFlow</h1>
           </div>
-          <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">PyFlow</h1>
         </div>
         
         {/* User Profile Snippet */}
@@ -117,7 +132,15 @@ const Layout: React.FC<LayoutProps> = ({
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+                    <div className="flex items-center">
+                        {user.isTrial || user.subscriptionTier ? (
+                            <span className="text-[10px] bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-400 px-1.5 rounded-sm font-bold flex items-center">
+                                <Crown className="w-3 h-3 mr-1" /> {user.subscriptionTier || 'TRIAL'}
+                            </span>
+                        ) : (
+                            <span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 px-1.5 rounded-sm font-bold">FREE</span>
+                        )}
+                    </div>
                 </div>
                 <button 
                     onClick={() => onChangeView(AppView.PROFILE)} 
@@ -132,30 +155,25 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
                 <div className="bg-yellow-400 rounded-full h-1.5 transition-all duration-1000" style={{ width: `${progress}%` }}></div>
             </div>
-            <div className="flex justify-between mt-1 text-[10px] text-slate-400">
-                <span>Lvl 1</span>
+            <div className="flex justify-between mt-1 text-[10px] text-slate-400 dark:text-slate-400">
+                <span>Lvl {Math.floor(user.xp / 100) + 1}</span>
                 <span>{user.xp} XP</span>
             </div>
         </div>
         
         <div className="p-4">
-             <div className="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
-                <label className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 block flex items-center">
-                    <Languages className="w-3 h-3 mr-1" /> {t.nav.nativeLang}
-                </label>
-                <select 
-                    value={language}
-                    onChange={(e) => onLanguageChange(e.target.value as Language)}
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm rounded-lg focus:ring-blue-500 p-2 outline-none"
-                >
-                    {languages.map(lang => (
-                        <option key={lang} value={lang}>{lang}</option>
-                    ))}
-                </select>
-             </div>
+             {/* Upgrade Button */}
+             {!user.subscriptionTier && (
+                 <button 
+                    onClick={() => onChangeView(AppView.SUBSCRIPTION)}
+                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-3 rounded-xl shadow-md flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform"
+                 >
+                     <Crown className="w-4 h-4 mr-2" /> Upgrade
+                 </button>
+             )}
         </div>
 
-        <nav className="flex-1 px-4 space-y-1 overflow-y-auto pb-4">
+        <nav className="flex-1 px-4 space-y-1 overflow-y-auto pb-4 custom-scrollbar">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -172,22 +190,40 @@ const Layout: React.FC<LayoutProps> = ({
           ))}
         </nav>
         
-        <div className="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-between gap-2">
-            <button 
-                onClick={() => onThemeChange(user.theme === 'light' ? 'dark' : 'light')} 
-                className="flex-1 flex items-center justify-center space-x-2 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition-colors rtl:space-x-reverse"
-            >
-                {user.theme === 'light' ? <><Moon className="w-4 h-4" /> <span>Dark</span></> : <><Sun className="w-4 h-4" /> <span>Light</span></>}
-            </button>
-            <button 
-                onClick={onLogout}
-                className="flex items-center justify-center p-2 text-slate-500 dark:text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                title={t.nav.logout}
-            >
-                <LogOut className="w-4 h-4" />
-            </button>
+        <div className="p-4 border-t border-slate-100 dark:border-slate-700 text-center">
+            <div className="text-[10px] text-slate-400 dark:text-slate-600 font-mono">
+                {t.nav.version} {APP_VERSION}
+            </div>
         </div>
       </aside>
+
+      {/* 2. Secondary Sidebar for Daily/Missions (Desktop only) */}
+      <div className="hidden lg:flex w-72 flex-col z-0">
+          <MissionSidebar 
+              user={user} 
+              language={language} 
+              onClockIn={onClockIn}
+              onCollectReward={onCollectReward}
+          />
+      </div>
+
+      {/* Mobile Mission Sidebar Drawer */}
+      {isMissionSidebarOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden" onClick={onCloseMissionSidebar}>
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+              <div className={`absolute top-0 bottom-0 w-80 bg-white dark:bg-slate-800 shadow-2xl transition-transform duration-300 transform ${isRTL ? 'left-0' : 'right-0'}`} onClick={e => e.stopPropagation()}>
+                    <button onClick={onCloseMissionSidebar} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-white z-10">
+                        <X className="w-5 h-5" />
+                    </button>
+                   <MissionSidebar 
+                        user={user} 
+                        language={language} 
+                        onClockIn={onClockIn}
+                        onCollectReward={onCollectReward}
+                    />
+              </div>
+          </div>
+      )}
 
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 z-20">
@@ -196,12 +232,6 @@ const Layout: React.FC<LayoutProps> = ({
            <span className="font-bold text-lg text-slate-800 dark:text-white">PyFlow</span>
         </div>
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
-            <button 
-                onClick={() => onThemeChange(user.theme === 'light' ? 'dark' : 'light')} 
-                className="p-2 text-slate-500 dark:text-slate-400"
-            >
-                {user.theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-            </button>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-600 dark:text-slate-300">
                 {isMobileMenuOpen ? <X /> : <Menu />}
             </button>
@@ -210,7 +240,7 @@ const Layout: React.FC<LayoutProps> = ({
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 z-10 md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 z-30 md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
            <div className={`absolute top-16 bottom-0 w-72 bg-white dark:bg-slate-800 p-4 shadow-xl flex flex-col overflow-y-auto ${isRTL ? 'left-0' : 'right-0'}`} onClick={e => e.stopPropagation()}>
              
              <div className="flex items-center space-x-3 mb-6 p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg rtl:space-x-reverse">
@@ -239,12 +269,19 @@ const Layout: React.FC<LayoutProps> = ({
                  </button>
                ))}
              </nav>
-             <button 
-                onClick={onLogout}
-                className="mt-6 w-full flex items-center justify-center space-x-2 p-3 text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl font-medium rtl:space-x-reverse"
-            >
-                <LogOut className="w-4 h-4" /> <span>{t.nav.logout}</span>
-            </button>
+             <div className="mt-4 border-t border-slate-100 dark:border-slate-700 pt-4 space-y-3">
+                 {/* Mobile also shows daily mission button here since sidebar is hidden */}
+                 <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-3">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Daily Progress</h4>
+                    <button 
+                        onClick={onClockIn}
+                        disabled={user.isClockedIn}
+                        className="w-full py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold disabled:bg-slate-300 dark:disabled:bg-slate-700"
+                    >
+                        {user.isClockedIn ? t.dashboard.comeBack : t.dashboard.clockIn}
+                    </button>
+                 </div>
+             </div>
            </div>
         </div>
       )}
