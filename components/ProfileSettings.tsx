@@ -97,7 +97,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                         {/* App Preferences Section */}
                         <div className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-5 border border-slate-100 dark:border-slate-700 space-y-5">
                             <h3 className="font-bold text-slate-800 dark:text-white text-sm uppercase tracking-wider flex items-center">
-                                <Monitor className="w-4 h-4 mr-2" /> App Preferences
+                                <Monitor className="w-4 h-4 mr-2" /> {t.appPrefs || 'App Preferences'}
                             </h3>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -197,17 +197,17 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                                     onChange={(e) => setGender(e.target.value as Gender)}
                                     className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
                                 >
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                    <option>Other</option>
-                                    <option>Prefer not to say</option>
+                                    <option value="Male">{t.genderOpts?.male || 'Male'}</option>
+                                    <option value="Female">{t.genderOpts?.female || 'Female'}</option>
+                                    <option value="Other">{t.genderOpts?.other || 'Other'}</option>
+                                    <option value="Prefer not to say">{t.genderOpts?.prefer || 'Prefer not to say'}</option>
                                 </select>
                             </div>
 
                              {/* Location Field */}
                              <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                    <Globe className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> Location (Detected via Network IP)
+                                    <Globe className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.locationDetect || 'Location (Detected via Network IP)'}
                                 </label>
                                 <div className="relative">
                                     <input

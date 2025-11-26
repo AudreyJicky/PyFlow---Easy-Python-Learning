@@ -21,7 +21,7 @@ const MissionSidebar: React.FC<MissionSidebarProps> = ({ user, language, onClock
     return (
         <div className="flex flex-col h-full bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 w-full overflow-hidden transition-colors">
             <div className="p-4 border-b border-slate-100 dark:border-slate-700">
-                <h3 className="font-bold text-slate-800 dark:text-white mb-4 text-lg">Daily Actions</h3>
+                <h3 className="font-bold text-slate-800 dark:text-white mb-4 text-lg">{t.dailyActions || 'Daily Actions'}</h3>
                 
                 {/* Check Up Card */}
                 <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-4 text-white shadow-lg flex flex-col items-center justify-center text-center mb-2">
@@ -63,7 +63,7 @@ const MissionSidebar: React.FC<MissionSidebarProps> = ({ user, language, onClock
                                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                             }`}
                         >
-                            {period.substring(0, 1) + period.substring(1).toLowerCase()}
+                            {t.periods[period]}
                         </button>
                     ))}
                 </div>
@@ -89,7 +89,8 @@ const MissionSidebar: React.FC<MissionSidebarProps> = ({ user, language, onClock
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className={`font-semibold text-xs leading-tight ${mission.isCompleted ? 'text-slate-800 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
-                                        {mission.title}
+                                        {/* Translate Mission Title using ID prefix mapping */}
+                                        {t.missionTitles && t.missionTitles[`m_${mission.id.split('_')[1]}`] ? t.missionTitles[`m_${mission.id.split('_')[1]}`] : mission.title}
                                     </p>
                                     <p className="text-[10px] text-slate-400 font-mono mt-0.5">+{mission.xpReward} XP</p>
                                 </div>

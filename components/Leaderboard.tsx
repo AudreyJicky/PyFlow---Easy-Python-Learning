@@ -92,7 +92,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentUser }) => {
                         }`}
                     >
                         {tab === 'Global' ? <Globe className="w-4 h-4 mr-2" /> : <MapPin className="w-3 h-3 mr-2" />}
-                        {tab === 'Local' ? (userEntry.country || 'Local') : tab}
+                        {tab === 'Local' ? (userEntry.country || t.regions['Local']) : t.regions[tab] || tab}
                     </button>
                 ))}
             </div>
@@ -102,8 +102,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentUser }) => {
                      <div className="flex items-center">
                         <Trophy className="w-8 h-8 mr-3 rtl:ml-3 rtl:mr-0 text-yellow-300" />
                         <div>
-                            <div className="font-bold text-lg">{t.yourRank} ({filter})</div>
-                            <div className="text-purple-200 text-sm">Top 20% of learners</div>
+                            <div className="font-bold text-lg">{t.yourRank} ({t.regions[filter] || filter})</div>
+                            <div className="text-purple-200 text-sm">{t.topPct}</div>
                         </div>
                      </div>
                      <div className="text-right rtl:text-left">

@@ -21,7 +21,7 @@ const Download: React.FC = () => {
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all group">
                     <Apple className="w-16 h-16 mx-auto mb-6 text-slate-800 dark:text-white group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{t.ios}</h3>
-                    <p className="text-slate-400 text-sm mb-6">iPhone & iPad</p>
+                    <p className="text-slate-400 text-sm mb-6">{t.iosDesc}</p>
                     <button className="w-full py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-700 transition-colors">
                         App Store
                     </button>
@@ -31,7 +31,7 @@ const Download: React.FC = () => {
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all group">
                     <Smartphone className="w-16 h-16 mx-auto mb-6 text-green-500 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{t.android}</h3>
-                    <p className="text-slate-400 text-sm mb-6">Phones & Tablets</p>
+                    <p className="text-slate-400 text-sm mb-6">{t.androidDesc}</p>
                     <button className="w-full py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors">
                         Play Store
                     </button>
@@ -41,7 +41,7 @@ const Download: React.FC = () => {
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all group">
                     <Monitor className="w-16 h-16 mx-auto mb-6 text-blue-500 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{t.desktop}</h3>
-                    <p className="text-slate-400 text-sm mb-6">Windows, macOS, Linux</p>
+                    <p className="text-slate-400 text-sm mb-6">{t.desktopDesc}</p>
                     <button className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
                         Download
                     </button>
@@ -51,7 +51,7 @@ const Download: React.FC = () => {
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all group">
                     <Globe className="w-16 h-16 mx-auto mb-6 text-purple-500 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{t.web}</h3>
-                    <p className="text-slate-400 text-sm mb-6">Browser Access</p>
+                    <p className="text-slate-400 text-sm mb-6">{t.webDesc}</p>
                     <button 
                         onClick={() => window.open(window.location.href, '_blank')}
                         className="w-full py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"

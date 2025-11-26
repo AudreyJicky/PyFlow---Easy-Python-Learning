@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppView, Language, UserProfile, ThemeMode, APP_VERSION } from '../types';
 import { translations } from '../translations';
@@ -168,7 +169,7 @@ const Layout: React.FC<LayoutProps> = ({
                     onClick={() => onChangeView(AppView.SUBSCRIPTION)}
                     className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-3 rounded-xl shadow-md flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform"
                  >
-                     <Crown className="w-4 h-4 mr-2" /> Upgrade
+                     <Crown className="w-4 h-4 mr-2" /> {t.nav.upgrade || 'Upgrade'}
                  </button>
              )}
         </div>
@@ -272,7 +273,7 @@ const Layout: React.FC<LayoutProps> = ({
              <div className="mt-4 border-t border-slate-100 dark:border-slate-700 pt-4 space-y-3">
                  {/* Mobile also shows daily mission button here since sidebar is hidden */}
                  <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-3">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Daily Progress</h4>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">{t.nav.dailyProgress || 'Daily Progress'}</h4>
                     <button 
                         onClick={onClockIn}
                         disabled={user.isClockedIn}

@@ -163,7 +163,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                                     : 'bg-white border border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-600'
                                 }`}
                             >
-                                {getCategoryIcon(cat)} {t.categories[cat]}
+                                {getCategoryIcon(cat)} {t.categories && t.categories[cat] ? t.categories[cat] : cat}
                             </button>
                         ))}
                     </div>
@@ -195,7 +195,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                                         note.category === 'Info' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300' :
                                         'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
                                     }`}>
-                                        {t.categories[note.category]}
+                                        {t.categories && t.categories[note.category] ? t.categories[note.category] : note.category}
                                     </span>
                                 )}
                             </div>
@@ -286,7 +286,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                                                 : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600 hover:border-slate-400'
                                             }`}
                                         >
-                                            {t.categories[cat]}
+                                            {t.categories && t.categories[cat] ? t.categories[cat] : cat}
                                         </button>
                                     ))}
                                 </div>
@@ -307,7 +307,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                                         <div className="mb-4">
                                              <span className="inline-flex items-center text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
                                                 {getCategoryIcon(selectedNote.category)} 
-                                                <span className="ml-1 rtl:mr-1 rtl:ml-0">{t.categories[selectedNote.category]}</span>
+                                                <span className="ml-1 rtl:mr-1 rtl:ml-0">{t.categories && t.categories[selectedNote.category] ? t.categories[selectedNote.category] : selectedNote.category}</span>
                                             </span>
                                         </div>
                                     )}

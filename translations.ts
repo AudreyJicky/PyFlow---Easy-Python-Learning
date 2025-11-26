@@ -1,426 +1,297 @@
 
 import { Language } from './types';
 
+// Helper for gender translations
+const genderEn = { male: 'Male', female: 'Female', other: 'Other', prefer: 'Prefer not to say' };
+
 const en = {
     nav: {
-      dashboard: 'Dashboard',
-      course: 'Course & Lessons',
-      exam: 'Test & Exam',
-      reference: 'Reference Book',
-      game: 'Arcade',
-      leaderboard: 'Rankings',
-      community: 'Study Groups',
-      notebook: 'Notebook',
-      flashcards: 'Concept Cards',
-      chat: 'Py-Sensei',
-      analyzer: 'Code Explainer',
-      search: 'Code Dictionary',
-      download: 'Download App',
-      profile: 'Profile',
-      logout: 'Sign Out',
-      theme: 'Theme',
-      nativeLang: 'Native Language',
-      subscription: 'Premium Plans',
-      feedback: 'Feedback & Bugs',
-      version: 'Ver'
+      dashboard: 'Dashboard', course: 'Course & Lessons', exam: 'Test & Exam', reference: 'Reference Book', game: 'Arcade', leaderboard: 'Rankings', community: 'Study Groups', notebook: 'Notebook', flashcards: 'Concept Cards', chat: 'Py-Sensei', analyzer: 'Code Explainer', search: 'Code Dictionary', download: 'Download App', profile: 'Profile', logout: 'Sign Out', theme: 'Theme', nativeLang: 'Native Language', subscription: 'Premium Plans', feedback: 'Feedback & Bugs', version: 'Ver', dailyProgress: 'Daily Progress', upgrade: 'Upgrade'
     },
     auth: {
-      title: 'PyFlow',
-      subtitle: 'Master Python the fun way.',
-      getStarted: 'Get Started',
-      emailLogin: 'Email',
-      phoneLogin: 'Phone',
-      google: 'Continue with Google',
-      email: 'Continue with Email',
-      phone: 'Continue with Phone',
-      emailLabel: 'Email Address',
-      phoneLabel: 'Phone Number',
-      nameLabel: 'Full Name',
-      placeholderEmail: 'you@example.com',
-      placeholderPhone: '123 456 7890',
-      placeholderName: 'John Doe',
-      signIn: 'Sign In',
-      signUp: 'Create Account',
-      back: 'Back',
-      terms: 'By continuing, you agree to our Terms of Service.',
-      agreeLabel: 'I agree to the Terms of Service and allow data usage to improve the app.',
-      noAccount: "Don't have an account?",
-      hasAccount: "Already have an account?",
-      verifyTitle: "Verify it's you",
-      verifyDesc: "We sent a 6-digit code to",
-      codeLabel: "Verification Code",
-      resend: "Resend Code",
-      verifyBtn: "Verify & Continue",
-      googleVerify: "Enter the code from your Google Authenticator or Device.",
-      welcomeBack: "Welcome back!",
-      chooseAccount: "Choose an account to continue",
-      useAnother: "Use another account"
+      title: 'PyFlow', subtitle: 'Master Python the fun way.', getStarted: 'Get Started', emailLogin: 'Email', phoneLogin: 'Phone', google: 'Continue with Google', email: 'Continue with Email', phone: 'Continue with Phone', emailLabel: 'Email Address', phoneLabel: 'Phone Number', nameLabel: 'Full Name', placeholderEmail: 'you@example.com', placeholderPhone: '123 456 7890', placeholderName: 'John Doe', signIn: 'Sign In', signUp: 'Create Account', back: 'Back', terms: 'By continuing, you agree to our Terms of Service.', agreeLabel: 'I agree to the Terms of Service and allow data usage to improve the app.', noAccount: "Don't have an account?", hasAccount: "Already have an account?", verifyTitle: "Verify it's you", verifyDesc: "We sent a 6-digit code to", codeLabel: "Verification Code", resend: "Resend Code", verifyBtn: "Verify & Continue", googleVerify: "Enter the code from your Google Authenticator or Device.", welcomeBack: "Welcome back!", chooseAccount: "Choose an account to continue", useAnother: "Use another account"
     },
     dashboard: {
-      hello: 'Hello',
-      subtitle: 'Ready to level up your Python skills?',
-      dailyXp: 'Daily XP',
-      dailyTip: 'Daily Python Tip',
-      loading: 'Loading tip...',
-      failedTip: 'Failed to load tip.',
-      clockIn: 'Check Up',
-      clockedIn: 'Checked Up',
-      comeBack: 'All set for today!',
-      missions: 'Missions',
-      collect: 'Collect',
-      collected: 'Collected',
-      periods: {
-          DAILY: 'Daily',
-          WEEKLY: 'Weekly',
-          MONTHLY: 'Monthly',
-          YEARLY: 'Yearly'
-      },
-      features: {
-        course: { title: 'Interactive Course', desc: 'Step-by-step animated lessons.' },
-        exam: { title: 'Exam Prep', desc: 'Mock tests and yearly papers.' },
-        reference: { title: 'Reference Book', desc: 'Master the basics with simple guides.' },
-        game: { title: 'Python Arcade', desc: 'Play quizzes and earn XP!' },
-        notebook: { title: 'My Notebook', desc: 'Save useful code snippets.' },
-        flashcards: { title: 'Concept Cards', desc: 'Swipe to memorize syntax.' },
-        chat: { title: 'Ask Py-Sensei', desc: 'Chat with your AI Tutor.' },
-        analyzer: { title: 'Code Explainer', desc: 'Paste code to understand it.' }
-      },
-      open: 'Open'
+      hello: 'Hello', subtitle: 'Ready to level up your Python skills?', dailyXp: 'Daily XP', dailyTip: 'Daily Python Tip', loading: 'Loading tip...', failedTip: 'Failed to load tip.', clockIn: 'Check Up', dailyActions: 'Daily Actions', comeBack: 'All set for today!', missions: 'Missions', collect: 'Collect', collected: 'Collected',
+      periods: { DAILY: 'Daily', WEEKLY: 'Weekly', MONTHLY: 'Monthly', YEARLY: 'Yearly' },
+      missionTitles: { m_d1: 'Daily Check Up', m_d2: 'Complete 1 Micro-Lesson', m_d3: 'Defeat the Bug Monster (Quiz)', m_d4: 'Scribble a Code Note', m_w1: 'Code Marathon: 3 Lessons', m_w2: 'Perfect Score in Arcade', m_w3: 'Referral Bonus: Friend hits 1k XP', m_w4: 'Analyze 5 Snippets', m_m1: 'Master a Module', m_m2: 'Earn 1000 XP', m_y1: 'Reach Grandmaster Rank', m_y2: '365 Days Streak' },
+      features: { course: { title: 'Interactive Course', desc: 'Step-by-step animated lessons.' }, exam: { title: 'Exam Prep', desc: 'Mock tests and yearly papers.' }, reference: { title: 'Reference Book', desc: 'Master the basics with simple guides.' }, game: { title: 'Python Arcade', desc: 'Play quizzes and earn XP!' }, notebook: { title: 'My Notebook', desc: 'Save useful code snippets.' }, flashcards: { title: 'Concept Cards', desc: 'Swipe to memorize syntax.' }, chat: { title: 'Ask Py-Sensei', desc: 'Chat with your AI Tutor.' }, analyzer: { title: 'Code Explainer', desc: 'Paste code to understand it.' } }, open: 'Open'
     },
     course: {
-        title: 'Python Journey',
-        desc: 'Follow the path to mastery. Each level contains detailed modules and lessons.',
-        start: 'Start Lesson',
-        locked: 'Locked',
-        completed: 'Completed',
-        visualize: 'Visualizing Code...',
-        step: 'Step',
-        output: 'Output',
-        variables: 'Memory',
-        quizTime: 'Lesson Quiz',
-        nextLesson: 'Next Lesson',
-        finishModule: 'Finish Module',
-        modules: {
-            basics: 'Python Basics',
-            control: 'Control Flow',
-            structures: 'Data Structures'
+        title: 'Python Journey', desc: 'Follow the path to mastery. Each level contains detailed modules and lessons.', start: 'Start Lesson', locked: 'Locked', completed: 'Completed', visualize: 'Visualizing Code...', step: 'Step', output: 'Output', variables: 'Memory', quizTime: 'Lesson Quiz', nextLesson: 'Next Lesson', finishModule: 'Finish Module',
+        moduleTitles: {
+            b1: 'Novice: First Steps', b1_desc: 'Your very first code lines. Zero experience needed.',
+            b2: 'Novice: Variables & Data', b2_desc: 'How to store information in memory.',
+            b3: 'Novice: Making Decisions', b3_desc: 'Teaching the computer to think with logic.',
+            b4: 'Novice: Looping', b4_desc: 'Repeating actions automatically.',
+            i1: 'Apprentice: Data Structures', i1_desc: 'Organizing complex data.',
+            i2: 'Apprentice: Functions', i2_desc: 'Creating reusable blocks of code.',
+            i3: 'Apprentice: File & Error Handling', i3_desc: 'Reading files and fixing crashes.',
+            p1: 'Grandmaster: OOP', p1_desc: 'Object Oriented Programming mastery.',
+            p2: 'Grandmaster: Advanced Features', p2_desc: 'Pythonic ways to write code.',
+        },
+        lessons: {
+             install: 'Installing Python', hello: 'Hello World', print: 'The Print Function', comments: 'Comments & Notes', math: 'Basic Math', var_what: 'What is a Variable?', strings: 'Strings (Text)', ints: 'Integers', floats: 'Floats', bools: 'Booleans', convert: 'Type Conversion', input: 'User Input', lists: 'Intro to Lists', funcs: 'Defining Functions', classes: 'Classes & Objects'
         }
     },
     exam: {
-        title: 'Exam Hall',
-        desc: 'Prepare for certifications with mock exams and yearly papers.',
-        mock: 'Mock Exam',
-        practice: 'Topic Practice',
-        start: 'Start Exam',
-        questions: 'Questions',
-        mins: 'Mins',
-        score: 'Final Score',
-        passed: 'Passed',
-        failed: 'Needs Improvement',
-        review: 'Review Answers',
-        quit: 'Quit Exam'
+        title: 'Exam Hall', desc: 'Prepare for certifications with mock exams and yearly papers.', mock: 'Mock Exam', practice: 'Topic Practice', start: 'Start Exam', questions: 'Questions', mins: 'Mins', score: 'Final Score', passed: 'Passed', failed: 'Needs Improvement', review: 'Review Answers', quit: 'Quit Exam'
     },
-    flashcards: {
-      newDeck: 'New Python Deck',
-      topicLabel: 'Topic (e.g., Loops, Lists)',
-      difficultyLabel: 'Difficulty Level',
-      currentLang: 'Current Language',
-      generate: 'Generate Cards',
-      generating: 'Generating...',
-      setup: 'Back to Setup',
-      flip: 'Tap to see code',
-      restart: 'Restart Deck',
-      syntax: 'Syntax',
-      example: 'Example',
-      beginner: 'Beginner',
-      intermediate: 'Intermediate',
-      advanced: 'Advanced'
-    },
-    game: {
-      title: 'Python Arcade',
-      desc: 'Select a game mode and difficulty to start earning XP!',
-      start: 'Start Game',
-      loading: 'Loading Quiz...',
-      gameOver: 'Game Over!',
-      score: 'You scored',
-      playAgain: 'Play Again',
-      question: 'Question',
-      next: 'Next Question',
-      finish: 'Finish',
-      explanation: 'Explanation',
-      modes: {
-        trivia: { title: 'Classic Trivia', desc: 'Test your general knowledge.' },
-        bug: { title: 'Bug Hunter', desc: 'Find and fix the error in the code.' },
-        sprint: { title: 'Syntax Sprint', desc: 'Fast-paced syntax questions.' }
-      },
-      levels: {
-        beginner: 'Novice',
-        intermediate: 'Apprentice',
-        professional: 'Grandmaster'
-      }
-    },
-    notebook: {
-      title: 'My Notes',
-      sharedTitle: 'Shared Notes',
-      empty: 'No notes here yet.',
-      newNote: 'New Note',
-      save: 'Save',
-      edit: 'Edit',
-      delete: 'Delete',
-      titlePlaceholder: 'Note Title...',
-      tagsPlaceholder: 'Tags (comma separated)...',
-      contentPlaceholder: 'Write your code, work notes, or daily tasks here...',
-      selectPrompt: 'Select a note or create a new one to get started.',
-      all: 'All Notes',
-      myNotes: 'My Notes',
-      friendsNotes: 'Friends & Groups',
-      sharedBy: 'Shared by',
-      categories: {
-          Study: 'Study',
-          Work: 'Work',
-          Daily: 'Daily',
-          Info: 'Info'
-      }
-    },
-    chat: {
-      title: 'Py-Sensei',
-      online: 'Online',
-      placeholder: 'Ask about a Python concept...',
-      send: 'Send',
-      reset: 'Reset Chat',
-      welcome: 'Hello! I am Py-Sensei 🐍. I make learning Python fun and easy! What do you want to build today?'
-    },
-    analyzer: {
-      title: 'Code Explainer',
-      desc: 'Paste Python code to understand how it works in',
-      placeholder: 'Paste Python code here... (e.g. for i in range(5): print(i))',
-      analyze: 'Explain Code',
-      analyzing: 'Analyzing...',
-      summary: 'Code Summary',
-      concepts: 'Key Concepts Used',
-      proTip: 'Pro Tip'
-    },
-    search: {
-        title: 'Code Dictionary',
-        desc: 'Search for any Python keyword or function to get a quick definition.',
-        placeholder: 'Search e.g. "print", "len", "lambda"...',
-        button: 'Search',
-        searching: 'Searching...',
-        syntax: 'Syntax',
-        example: 'Example',
-        related: 'Related Terms',
-        error: 'Definition not found. Try a different term.'
-    },
+    flashcards: { newDeck: 'New Python Deck', topicLabel: 'Topic (e.g., Loops, Lists)', difficultyLabel: 'Difficulty Level', currentLang: 'Current Language', generate: 'Generate Cards', generating: 'Generating...', setup: 'Back to Setup', flip: 'Tap to see code', restart: 'Restart Deck', syntax: 'Syntax', example: 'Example', beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' },
+    game: { title: 'Python Arcade', desc: 'Select a game mode and difficulty to start earning XP!', start: 'Start Game', loading: 'Loading Quiz...', gameOver: 'Game Over!', score: 'You scored', playAgain: 'Play Again', question: 'Question', next: 'Next Question', finish: 'Finish', explanation: 'Explanation', modes: { trivia: { title: 'Classic Trivia', desc: 'Test your general knowledge.' }, bug: { title: 'Bug Hunter', desc: 'Find and fix the error in the code.' }, sprint: { title: 'Syntax Sprint', desc: 'Fast-paced syntax questions.' } }, levels: { beginner: 'Novice', intermediate: 'Apprentice', professional: 'Grandmaster' } },
+    notebook: { title: 'My Notes', sharedTitle: 'Shared Notes', empty: 'No notes here yet.', newNote: 'New Note', save: 'Save', edit: 'Edit', delete: 'Delete', titlePlaceholder: 'Note Title...', tagsPlaceholder: 'Tags (comma separated)...', contentPlaceholder: 'Write your code, work notes, or daily tasks here...', selectPrompt: 'Select a note or create a new one to get started.', all: 'All Notes', myNotes: 'My Notes', friendsNotes: 'Friends & Groups', sharedBy: 'Shared by', categories: { Study: 'Study', Work: 'Work', Daily: 'Daily', Info: 'Info' } },
+    chat: { title: 'Py-Sensei', online: 'Online', placeholder: 'Ask about a Python concept...', send: 'Send', reset: 'Reset Chat', welcome: 'Hello! I am Py-Sensei 🐍. I make learning Python fun and easy! What do you want to build today?' },
+    analyzer: { title: 'Code Explainer', desc: 'Paste Python code to understand how it works in', placeholder: 'Paste Python code here... (e.g. for i in range(5): print(i))', analyze: 'Explain Code', analyzing: 'Analyzing...', summary: 'Code Summary', concepts: 'Key Concepts Used', proTip: 'Pro Tip' },
+    search: { title: 'Code Dictionary', desc: 'Search for any Python keyword or function to get a quick definition.', placeholder: 'Search e.g. "print", "len", "lambda"...', button: 'Search', searching: 'Searching...', syntax: 'Syntax', example: 'Example', related: 'Related Terms', error: 'Definition not found. Try a different term.' },
     reference: {
-      basics: 'Table of Contents',
-      select: 'Select a topic to start reading!',
-      loading: 'Writing your textbook...',
-      sections: {
-          core: 'Core Curriculum',
-          practical: 'Practical Applications'
-      },
-      topics: {
-        variables: 'Variables',
-        datatypes: 'Data Types',
-        lists: 'Lists',
-        loops: 'Loops',
-        functions: 'Functions',
-        conditionals: 'Conditionals',
-        dictionaries: 'Dictionaries'
-      },
-      desc: {
-        variables: 'Storing data containers',
-        datatypes: 'Strings, Integers, Booleans',
-        lists: 'Collections of items',
-        loops: 'Repeating actions',
-        functions: 'Reusable code blocks',
-        conditionals: 'If, Elif, Else logic',
-        dictionaries: 'Key-value pairs'
-      }
+      basics: 'Table of Contents', select: 'Select a topic to start reading!', loading: 'Writing your textbook...',
+      sections: { core: 'Core Curriculum', practical: 'Practical Applications', novice: 'Novice (Beginner)', apprentice: 'Apprentice (Intermediate)', grandmaster: 'Grandmaster (Professional)', daily: 'Daily Life', school: 'School Helper', work: 'Work & Office', code: 'Code Bank' },
+      topics: { variables: 'Variables', datatypes: 'Data Types', lists: 'Lists', loops: 'Loops', functions: 'Functions', conditionals: 'Conditionals', dictionaries: 'Dictionaries', scope: 'Functions & Scope', sets: 'Dictionaries & Sets', files: 'File Handling', errors: 'Error Handling', modules: 'Modules & Pip', oop: 'OOP Basics', decorators: 'Decorators', generators: 'Generators', context: 'Context Managers', concurrency: 'Concurrency', metaprog: 'Metaprogramming', patterns: 'Design Patterns', chores: 'Automating Chores', files_org: 'Organizing Files', emails: 'Sending Emails', math: 'Math Solver', plotting: 'Plotting Graphs', flashmaker: 'Flashcard Maker', excel: 'Excel Automation', scraping: 'Web Scraping', pdf: 'PDF Manipulation', oneliners: 'One-Liners', regex: 'Regex Cheat Sheet', algos: 'Algorithm Snippets' },
+      desc: { variables: 'Storing data containers', datatypes: 'Strings, Integers, Booleans', lists: 'Collections of items', loops: 'Repeating actions', functions: 'Reusable code blocks', conditionals: 'If, Elif, Else logic', dictionaries: 'Key-value pairs' }
     },
     profile: {
-      title: 'Profile Settings',
-      memberSince: 'Member Since',
-      fullName: 'Full Name',
-      email: 'Email (Read-only)',
-      birthday: 'Birthday',
-      gender: 'Gender',
-      bio: 'Learning Preferences / Bio',
-      bioPlaceholder: 'Tell us about your coding goals...',
-      save: 'Save Changes',
-      saved: 'Saved Successfully',
-      autoTranslate: 'Auto-Translate Messages',
-      studyReminder: 'Daily Study Reminder',
-      webLink: 'Web Access Link',
-      generateLink: 'Copy Web Link',
-      linkCopied: 'Link Copied!',
-      referral: 'Refer & Earn',
-      referralDesc: 'Share link. When your friend reaches 1000 XP, both of you get 100 XP!',
-      copyReferral: 'Copy Referral Link',
-      actions: 'Account Actions'
+      title: 'Profile Settings', memberSince: 'Member Since', fullName: 'Full Name', email: 'Email (Read-only)', birthday: 'Birthday', gender: 'Gender', bio: 'Learning Preferences / Bio', bioPlaceholder: 'Tell us about your coding goals...', save: 'Save Changes', saved: 'Saved Successfully', autoTranslate: 'Auto-Translate Messages', studyReminder: 'Daily Study Reminder', webLink: 'Web Access Link', generateLink: 'Copy Web Link', linkCopied: 'Link Copied!', referral: 'Refer & Earn', referralDesc: 'Share link. When your friend reaches 1000 XP, both of you get 100 XP!', copyReferral: 'Copy Referral Link', actions: 'Account Actions', appPrefs: 'App Preferences', locationDetect: 'Location (Detected via Network IP)',
+      genderOpts: genderEn
     },
-    leaderboard: {
-      title: 'Global Leaderboard',
-      desc: 'See how you stack up against other learners!',
-      yourRank: 'Your Current Rank',
-      topPct: 'Top 20% of learners',
-      rank: 'Rank',
-      regions: {
-          Global: 'Global',
-          Asia: 'Asia',
-          Europe: 'Europe',
-          Americas: 'Americas',
-          Local: 'My Country'
-      }
+    leaderboard: { title: 'Global Leaderboard', desc: 'See how you stack up against other learners!', yourRank: 'Your Current Rank', topPct: 'Top 20% of learners', rank: 'Rank', regions: { Global: 'Global', Asia: 'Asia', Europe: 'Europe', Americas: 'Americas', Local: 'My Country' } },
+    community: { title: 'Community Groups', desc: 'Join a squad and learn together!', create: 'Create Group', search: 'Search for topics, languages, or groups...', yourGroups: 'Your Groups', explore: 'Explore Groups', members: 'Members', online: 'Online', openChat: 'Open Chat', join: 'Join Group', classroom: { back: 'Leave Classroom', conversation: 'Conversation', voice: 'Voice Mode', focus: 'Focus Timer', typing: 'typing...', online: 'Online', busy: 'Focusing', speaking: 'Speaking', addFriend: 'Add Friend', reminder: 'Set Reminder', friendAdded: 'Friend Added!', reminderSet: 'Reminder Sent!', rank: 'Rank', level: 'Level', xp: 'XP', startFocus: 'Start Focus', stopFocus: 'Stop Focus', translate: 'Translate', original: 'Original' }, createModal: { title: 'Start a New Study Group', name: 'Group Name', desc: 'Description', tags: 'Tags', country: 'Region/Country', submit: 'Create Classroom', cancel: 'Cancel' } },
+    download: { title: 'Take PyFlow Everywhere', desc: 'Learn Python on the go. Sync your progress across all your devices.', ios: 'iOS', iosDesc: 'iPhone & iPad', android: 'Android', androidDesc: 'Phones & Tablets', desktop: 'Desktop', desktopDesc: 'Windows, macOS, Linux', web: 'Web', webDesc: 'Browser Access', launchWeb: 'Open Website', betaTitle: 'Join the beta testing group', betaDesc: 'Get early access to new features like the "Advanced Python" course.', betaBtn: 'Join Beta Program' },
+    subscription: { title: 'Unlock Premium', desc: 'Choose a plan to master Python faster.', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly', lifetime: 'Lifetime', trial: '7-Day Free Trial Active', select: 'Select Plan', current: 'Current Plan', popular: 'Most Popular', benefits: { unlimited: 'Unlimited AI Chat', offline: 'Offline Mode', certified: 'Get Certified', ads: 'No Ads' }, redeem: { title: 'Redeem XP for Premium', desc: 'Use your hard-earned XP to unlock free premium access.', balance: 'Your Balance', week: '1 Week Free', month: '1 Month Free', year: '1 Year Free', btn: 'Redeem', insufficient: 'Need more XP' } },
+    feedback: { title: 'Improve PyFlow', desc: 'Found a bug or have a suggestion? Let us know!', category: 'Category', design: 'Design / UI', content: 'Content / Info', bug: 'Bug / Error', suggestion: 'Suggestion', message: 'Message', submit: 'Submit Feedback', thanks: 'Thanks for your feedback!' }
+};
+
+const cn = {
+    ...en,
+    nav: {
+      dashboard: '仪表板', course: '互动课程', exam: '考试模拟', reference: '参考书', game: '街机模式', leaderboard: '排行榜', community: '学习小组', notebook: '笔记本', flashcards: '概念卡片', chat: 'Py-老师', analyzer: '代码解释器', search: '代码词典', download: '下载应用', profile: '个人资料', logout: '登出', theme: '主题', nativeLang: '母语', subscription: '高级订阅', feedback: '反馈', version: '版本', dailyProgress: '每日进度', upgrade: '升级'
     },
-    community: {
-      title: 'Community Groups',
-      desc: 'Join a squad and learn together!',
-      create: 'Create Group',
-      search: 'Search for topics, languages, or groups...',
-      yourGroups: 'Your Groups',
-      explore: 'Explore Groups',
-      members: 'Members',
-      online: 'Online',
-      openChat: 'Open Chat',
-      join: 'Join Group',
-      classroom: {
-          back: 'Leave Classroom',
-          conversation: 'Conversation',
-          voice: 'Voice Mode',
-          focus: 'Focus Timer',
-          typing: 'typing...',
-          online: 'Online',
-          busy: 'Focusing',
-          speaking: 'Speaking',
-          addFriend: 'Add Friend',
-          reminder: 'Set Reminder',
-          friendAdded: 'Friend Added!',
-          reminderSet: 'Reminder Sent!',
-          rank: 'Rank',
-          level: 'Level',
-          xp: 'XP',
-          startFocus: 'Start Focus',
-          stopFocus: 'Stop Focus',
-          translate: 'Translate',
-          original: 'Original'
-      },
-      createModal: {
-          title: 'Start a New Study Group',
-          name: 'Group Name',
-          desc: 'Description',
-          tags: 'Tags',
-          country: 'Region/Country',
-          submit: 'Create Classroom',
-          cancel: 'Cancel'
-      }
+    auth: { ...en.auth, title: 'PyFlow', subtitle: '快乐学Python', getStarted: '开始', signIn: '登录', signUp: '注册', email: '邮箱登录', phone: '手机登录', google: 'Google登录', welcomeBack: '欢迎回来', chooseAccount: '选择账号', useAnother: '使用其他账号', verifyTitle: '验证身份', verifyDesc: '验证码已发送至', verifyBtn: '验证并继续' },
+    dashboard: { ...en.dashboard, hello: '你好', subtitle: '准备好提升Python技能了吗？', dailyXp: '今日XP', dailyTip: '每日技巧', clockIn: '打卡', dailyActions: '每日任务', missions: '任务', collect: '领取', collected: '已领取', missionTitles: { m_d1: '每日打卡', m_d2: '完成1个微课程', m_d3: '击败Bug怪兽（测验）', m_d4: '写一条代码笔记', m_w1: '代码马拉松：3课', m_w2: '街机模式满分', m_w3: '推荐奖励：好友达1k XP', m_w4: '分析5个片段', m_m1: '精通一个模块', m_m2: '赚取1000 XP', m_y1: '达到大师段位', m_y2: '365天连胜' }, features: { ...en.dashboard.features, course: { title: '互动课程', desc: '循序渐进的动画课程' }, exam: { title: '备考', desc: '模拟测试和真题' }, reference: { title: '参考书', desc: '掌握基础知识' }, game: { title: 'Python街机', desc: '玩游戏赚XP' }, notebook: { title: '笔记本', desc: '保存代码片段' }, flashcards: { title: '概念卡片', desc: '滑动记忆语法' }, chat: { title: 'Py-老师', desc: 'AI 导师在线答疑' }, analyzer: { title: '代码解释器', desc: '粘贴代码以理解' } } },
+    course: { 
+        ...en.course, title: 'Python 之旅', desc: '循序渐进掌握编程', start: '开始课程', locked: '未解锁', completed: '已完成', quizTime: '小测验', nextLesson: '下一课', finishModule: '完成模块', 
+        moduleTitles: { b1: '新手：第一步', b1_desc: '编写你的第一行代码。', b2: '新手：变量与数据', b2_desc: '如何在内存中存储信息。', b3: '新手：做决定', b3_desc: '教计算机逻辑思考。', b4: '新手：循环', b4_desc: '自动重复操作。', i1: '学徒：数据结构', i1_desc: '组织复杂数据。', i2: '学徒：函数', i2_desc: '创建可重用的代码块。', i3: '学徒：文件与错误', i3_desc: '读写文件和修复崩溃。', p1: '大师：面向对象', p1_desc: '掌握OOP编程。', p2: '大师：高级特性', p2_desc: 'Pythonic 编程方式。' },
+        lessons: { install: '安装 Python', hello: 'Hello World', print: 'Print 函数', comments: '注释', math: '基础数学', var_what: '什么是变量？', strings: '字符串 (Text)', ints: '整数', floats: '浮点数', bools: '布尔值', convert: '类型转换', input: '用户输入', lists: '列表入门', funcs: '定义函数', classes: '类与对象' }
     },
-    download: {
-      title: 'Take PyFlow Everywhere',
-      desc: 'Learn Python on the go. Sync your progress across all your devices.',
-      ios: 'iOS',
-      android: 'Android',
-      desktop: 'Desktop',
-      web: 'Web',
-      launchWeb: 'Open Website',
-      betaTitle: 'Join the beta testing group',
-      betaDesc: 'Get early access to new features like the "Advanced Python" course.',
-      betaBtn: 'Join Beta Program'
+    exam: { ...en.exam, title: '考试大厅', desc: '备考认证，模拟真题', mock: '模拟考试', practice: '专项练习', start: '开始考试', score: '最终得分', passed: '通过', failed: '需努力', quit: '退出' },
+    game: { ...en.game, title: 'Python 街机', desc: '玩游戏赢XP', start: '开始游戏', gameOver: '游戏结束', score: '得分', playAgain: '再玩一次', explanation: '解释', modes: { trivia: { title: '经典问答', desc: '测试常识' }, bug: { title: '找Bug', desc: '修复代码错误' }, sprint: { title: '语法冲刺', desc: '快速问答' } }, levels: { beginner: '新手', intermediate: '学徒', professional: '大师' } },
+    notebook: { ...en.notebook, title: '我的笔记', sharedTitle: '共享笔记', myNotes: '我的笔记', friendsNotes: '朋友和小组', sharedBy: '共享者', newNote: '新建笔记', save: '保存', categories: { Study: '学习', Work: '工作', Daily: '日常', Info: '信息' } },
+    reference: { ...en.reference, basics: '目录', select: '选择一个主题开始阅读', sections: { core: '核心课程', practical: '实战应用', novice: '新手 (入门)', apprentice: '学徒 (进阶)', grandmaster: '大师 (专业)', daily: '日常生活', school: '学校助手', work: '办公自动化', code: '代码库' }, topics: { variables: '变量', datatypes: '数据类型', lists: '列表', loops: '循环', functions: '函数', conditionals: '条件判断', dictionaries: '字典', scope: '作用域', sets: '集合', files: '文件处理', errors: '错误处理', modules: '模块', oop: '面向对象基础', decorators: '装饰器', generators: '生成器', context: '上下文管理器', concurrency: '并发', metaprog: '元编程', patterns: '设计模式', chores: '家务自动化', files_org: '文件整理', emails: '邮件发送', math: '数学解题', plotting: '绘图', flashmaker: '卡片制作', excel: 'Excel自动化', scraping: '网页爬虫', pdf: 'PDF处理', oneliners: '一行代码', regex: '正则速查', algos: '算法片段' }, desc: { variables: '存储数据容器', datatypes: '字符串，整数，布尔', lists: '项目集合', loops: '重复动作', functions: '可重用代码块', conditionals: 'If/Else 逻辑', dictionaries: '键值对' } },
+    profile: { ...en.profile, title: '个人设置', memberSince: '加入时间', fullName: '姓名', email: '邮箱', bio: '简介', save: '保存更改', saved: '保存成功', autoTranslate: '自动翻译消息', referral: '推荐并赚取', referralDesc: '分享链接。当您的朋友达到 1000 XP 时，你们每人获得 100 XP！', copyReferral: '复制推荐链接', webLink: '网页版链接', generateLink: '生成链接', appPrefs: '应用偏好', locationDetect: '位置 (通过网络IP检测)', genderOpts: { male: '男', female: '女', other: '其他', prefer: '保密' } },
+    community: { ...en.community, title: '学习小组', desc: '加入小组共同进步', create: '创建小组', yourGroups: '你的小组', explore: '发现小组', join: '加入', classroom: { ...en.community.classroom, translate: '翻译', original: '原文', conversation: '对话', voice: '语音', focus: '专注' } },
+    subscription: { ...en.subscription, title: '解锁高级版', desc: '选择计划加速学习', popular: '最受欢迎', weekly: '周卡', monthly: '月卡', yearly: '年卡', lifetime: '终身卡', trial: '7天免费试用中', redeem: { ...en.subscription.redeem, title: '积分兑换', desc: '用您的XP兑换免费会员', balance: '当前余额', btn: '兑换', insufficient: '积分不足' } },
+    feedback: { ...en.feedback, title: '改进 PyFlow', desc: '发现Bug或有建议？', submit: '提交反馈', thanks: '感谢您的反馈！' },
+    search: { ...en.search, title: '代码词典', desc: '搜索任何Python关键字', placeholder: '搜索例如 "print", "len"...', button: '搜索', searching: '搜索中...', syntax: '语法', example: '示例', related: '相关术语', error: '未找到定义' },
+    flashcards: { ...en.flashcards, newDeck: '新卡组', topicLabel: '主题', difficultyLabel: '难度', generate: '生成', flip: '点击翻转', syntax: '语法', example: '示例' },
+    chat: { ...en.chat, title: 'Py-老师', placeholder: '询问Python概念...', send: '发送', welcome: '你好！我是Py-老师🐍。想学点什么？' },
+    leaderboard: { ...en.leaderboard, title: '全球排行榜', regions: { Global: '全球', Asia: '亚洲', Europe: '欧洲', Americas: '美洲', Local: '本国' } },
+    download: { ...en.download, title: '随时随地学习 PyFlow', desc: '在所有设备上同步进度。', iosDesc: 'iPhone 和 iPad', androidDesc: '手机和平板', desktopDesc: 'Windows, macOS, Linux', webDesc: '浏览器访问', launchWeb: '打开网页版' }
+};
+
+const ms = {
+    ...en,
+    nav: {
+      dashboard: 'Papan Pemuka', course: 'Kursus', exam: 'Peperiksaan', reference: 'Buku Rujukan', game: 'Arked', leaderboard: 'Ranking', community: 'Kumpulan Belajar', notebook: 'Buku Nota', flashcards: 'Kad Konsep', chat: 'Py-Cikgu', analyzer: 'Penerang Kod', search: 'Kamus Kod', download: 'Muat Turun', profile: 'Profil', logout: 'Log Keluar', theme: 'Tema', nativeLang: 'Bahasa Ibunda', subscription: 'Langganan', feedback: 'Maklum Balas', version: 'Versi', dailyProgress: 'Kemajuan Harian', upgrade: 'Naik Taraf'
     },
-    subscription: {
-        title: 'Unlock Premium',
-        desc: 'Choose a plan to master Python faster.',
-        weekly: 'Weekly',
-        monthly: 'Monthly',
-        yearly: 'Yearly',
-        lifetime: 'Lifetime',
-        trial: '7-Day Free Trial Active',
-        select: 'Select Plan',
-        current: 'Current Plan',
-        benefits: {
-            unlimited: 'Unlimited AI Chat',
-            offline: 'Offline Mode',
-            certified: 'Get Certified',
-            ads: 'No Ads'
-        },
-        redeem: {
-            title: 'Redeem XP for Premium',
-            desc: 'Use your hard-earned XP to unlock free premium access.',
-            week: '1 Week Free',
-            month: '1 Month Free',
-            year: '1 Year Free',
-            btn: 'Redeem',
-            insufficient: 'Need more XP'
-        }
+    auth: { ...en.auth, title: 'PyFlow', subtitle: 'Kuasai Python dengan mudah', getStarted: 'Mula Sekarang', signIn: 'Log Masuk', signUp: 'Daftar', welcomeBack: 'Selamat Kembali', verifyBtn: 'Sahkan & Teruskan' },
+    dashboard: { ...en.dashboard, hello: 'Helo', subtitle: 'Sedia untuk belajar Python?', dailyXp: 'XP Harian', dailyTip: 'Tip Harian', clockIn: 'Daftar Masuk', dailyActions: 'Tindakan Harian', missions: 'Misi', collect: 'Kutip', collected: 'Dikutip', missionTitles: { m_d1: 'Daftar Masuk Harian', m_d2: 'Selesai 1 Pelajaran Mikro', m_d3: 'Kalah Raksasa Bug (Kuiz)', m_d4: 'Tulis Nota Kod', m_w1: 'Maraton Kod: 3 Pelajaran', m_w2: 'Skor Sempurna di Arked', m_w3: 'Bonus Rujukan: Rakan capai 1k XP', m_w4: 'Analisis 5 Coretan', m_m1: 'Kuasai Modul', m_m2: 'Peroleh 1000 XP', m_y1: 'Capai Pangkat Grandmaster', m_y2: '365 Hari Berturut-turut' }, features: { ...en.dashboard.features, course: { title: 'Kursus Interaktif', desc: 'Pelajaran animasi langkah demi langkah.' }, reference: { title: 'Buku Rujukan', desc: 'Kuasai asas dengan panduan mudah.' }, game: { title: 'Arked Python', desc: 'Main kuiz dan dapatkan XP!' } } },
+    course: { 
+        ...en.course, title: 'Perjalanan Python', start: 'Mula Pelajaran', locked: 'Terkunci', completed: 'Selesai', nextLesson: 'Seterusnya', 
+        moduleTitles: { b1: 'Novice: Langkah Pertama', b1_desc: 'Baris kod pertama anda.', b2: 'Novice: Pembolehubah', b2_desc: 'Cara menyimpan maklumat.', b3: 'Novice: Logik', b3_desc: 'Mengajar komputer berfikir.', b4: 'Novice: Gelung', b4_desc: 'Mengulang tindakan.', i1: 'Perantis: Struktur Data', i1_desc: 'Mengatur data kompleks.', i2: 'Perantis: Fungsi', i2_desc: 'Blok kod boleh guna semula.', i3: 'Perantis: Fail', i3_desc: 'Membaca fail & membaiki ralat.', p1: 'Grandmaster: OOP', p1_desc: 'Penguasaan OOP.', p2: 'Grandmaster: Ciri Lanjutan', p2_desc: 'Cara kod Pythonic.' },
+        lessons: { install: 'Pasang Python', hello: 'Hello World', print: 'Fungsi Print', comments: 'Komen', math: 'Matematik Asas', var_what: 'Apa itu Pembolehubah?', strings: 'String (Teks)', ints: 'Integer', floats: 'Perpuluhan', bools: 'Boolean', convert: 'Penukaran Jenis', input: 'Input Pengguna', lists: 'Pengenalan Senarai', funcs: 'Mendefinisikan Fungsi', classes: 'Kelas & Objek' }
     },
-    feedback: {
-        title: 'Improve PyFlow',
-        desc: 'Found a bug or have a suggestion? Let us know!',
-        category: 'Category',
-        design: 'Design / UI',
-        content: 'Content / Info',
-        bug: 'Bug / Error',
-        suggestion: 'Suggestion',
-        message: 'Message',
-        submit: 'Submit Feedback',
-        thanks: 'Thanks for your feedback!'
-    }
+    exam: { ...en.exam, title: 'Dewan Peperiksaan', desc: 'Persediaan sijil dengan ujian olok-olok.', mock: 'Ujian Olok-olok', practice: 'Latihan Topik', start: 'Mula Peperiksaan', score: 'Markah Akhir', passed: 'Lulus', failed: 'Gagal', quit: 'Keluar' },
+    game: { ...en.game, title: 'Arked Python', start: 'Mula Main', gameOver: 'Tamat Permainan', score: 'Markah', playAgain: 'Main Lagi', modes: { trivia: { title: 'Trivia Klasik', desc: 'Uji pengetahuan am.' }, bug: { title: 'Pemburu Bug', desc: 'Cari ralat.' }, sprint: { title: 'Pecutan Sintaks', desc: 'Soalan pantas.' } }, levels: { beginner: 'Novice', intermediate: 'Perantis', professional: 'Grandmaster' } },
+    notebook: { ...en.notebook, title: 'Nota Saya', sharedTitle: 'Nota Dikongsi', categories: { Study: 'Belajar', Work: 'Kerja', Daily: 'Harian', Info: 'Info' } },
+    profile: { ...en.profile, title: 'Tetapan Profil', save: 'Simpan', referral: 'Rujuk & Peroleh', referralDesc: 'Kongsi pautan. Apabila rakan mencapai 1000 XP, anda berdua dapat 100 XP!', copyReferral: 'Salin Pautan', webLink: 'Pautan Web', appPrefs: 'Pilihan Aplikasi', locationDetect: 'Lokasi (Dikesan melalui IP)', genderOpts: { male: 'Lelaki', female: 'Perempuan', other: 'Lain-lain', prefer: 'Rahsia' } },
+    community: { ...en.community, title: 'Komuniti', create: 'Cipta Kumpulan', join: 'Sertai', classroom: { ...en.community.classroom, translate: 'Terjemah', original: 'Asal', conversation: 'Perbualan', voice: 'Suara', focus: 'Fokus' } },
+    subscription: { ...en.subscription, title: 'Langgan Premium', popular: 'Paling Popular', trial: 'Percuma 7 Hari Aktif', redeem: { ...en.subscription.redeem, title: 'Tebus XP', balance: 'Baki Anda', btn: 'Tebus' } },
+    search: { ...en.search, title: 'Kamus Kod', desc: 'Cari sebarang kata kunci Python.', placeholder: 'Cari cth. "print"...', button: 'Cari', syntax: 'Sintaks', example: 'Contoh' },
+    flashcards: { ...en.flashcards, newDeck: 'Dek Baru', generate: 'Jana', flip: 'Terbalikkan', syntax: 'Sintaks' },
+    reference: { ...en.reference, basics: 'Isi Kandungan', sections: { core: 'Kurikulum Teras', practical: 'Aplikasi Praktikal', novice: 'Novice', apprentice: 'Perantis', grandmaster: 'Grandmaster', daily: 'Harian', school: 'Sekolah', work: 'Kerja', code: 'Bank Kod' }, topics: { variables: 'Pembolehubah', loops: 'Gelung', functions: 'Fungsi', lists: 'Senarai', datatypes: 'Jenis Data', conditionals: 'Keadaan', dictionaries: 'Kamus', scope: 'Skop', sets: 'Set', files: 'Fail', errors: 'Ralat', modules: 'Modul', oop: 'OOP', decorators: 'Penghias', generators: 'Penjana', context: 'Konteks', concurrency: 'Keserentakan', metaprog: 'Meta', patterns: 'Corak', chores: 'Kerja Rumah', files_org: 'Fail Org', emails: 'E-mel', math: 'Matematik', plotting: 'Plot', flashmaker: 'Pembuat Kad', excel: 'Excel', scraping: 'Scraping', pdf: 'PDF', oneliners: 'Satu Baris', regex: 'Regex', algos: 'Algoritma' }, desc: { variables: 'Menyimpan data', datatypes: 'String, Integer', lists: 'Koleksi item', loops: 'Tindakan berulang', functions: 'Blok kod', conditionals: 'Logik If/Else', dictionaries: 'Pasangan kunci-nilai' } },
+    leaderboard: { ...en.leaderboard, title: 'Ranking Global', regions: { Global: 'Global', Asia: 'Asia', Europe: 'Eropah', Americas: 'Amerika', Local: 'Tempatan' } },
+    download: { ...en.download, title: 'Bawa PyFlow Ke Mana Saja', desc: 'Belajar Python di mana jua. Sinkronisasi kemajuan anda.', iosDesc: 'iPhone & iPad', androidDesc: 'Telefon & Tablet', desktopDesc: 'Windows, macOS, Linux', webDesc: 'Akses Pelayar' }
+};
+
+const jp = {
+    ...en,
+    nav: {
+      dashboard: 'ダッシュボード', course: 'コース', exam: '試験', reference: '参考書', game: 'アーケード', leaderboard: 'ランキング', community: 'コミュニティ', notebook: 'ノート', flashcards: 'カード', chat: 'Py先生', analyzer: 'コード解説', search: '辞書', download: 'アプリ', profile: '設定', logout: 'ログアウト', theme: 'テーマ', nativeLang: '表示言語', subscription: 'プレミアム', feedback: 'フィードバック', version: 'Ver', dailyProgress: '今日の進捗', upgrade: 'アップグレード'
+    },
+    auth: { ...en.auth, getStarted: '始める', signIn: 'ログイン', signUp: '登録', welcomeBack: 'お帰りなさい', verifyBtn: '認証して続行', emailLabel: 'メールアドレス', phoneLabel: '電話番号' },
+    dashboard: { ...en.dashboard, hello: 'こんにちは', subtitle: 'Pythonスキルを磨きましょう！', dailyXp: '今日のXP', dailyTip: '今日のヒント', clockIn: 'チェックイン', dailyActions: 'デイリーアクション', missions: 'ミッション', collect: '受け取る', collected: '受取済み', missionTitles: { m_d1: 'デイリーチェックイン', m_d2: 'レッスンを1つ完了', m_d3: 'バグモンスター討伐（クイズ）', m_d4: 'コードノートを書く', m_w1: 'コードマラソン：3レッスン', m_w2: 'アーケードで満点', m_w3: '紹介ボーナス：友達が1k XP到達', m_w4: 'コード分析5回', m_m1: 'モジュールをマスター', m_m2: '1000 XP獲得', m_y1: 'グランドマスターランク到達', m_y2: '365日連続ログイン' }, features: { ...en.dashboard.features, course: { title: 'インタラクティブコース', desc: 'ステップバイステップのアニメーションレッスン' }, reference: { title: '参考書', desc: '基礎をマスター' }, game: { title: 'Pythonアーケード', desc: 'クイズでXPを稼ぐ' } } },
+    course: { 
+        ...en.course, title: 'Pythonの旅', start: 'レッスン開始', locked: 'ロック中', completed: '完了', nextLesson: '次のレッスンへ', quizTime: 'クイズ', 
+        moduleTitles: { b1: '初級：第一歩', b1_desc: '最初のコードを書こう。', b2: '初級：変数とデータ', b2_desc: '情報の保存方法。', b3: '初級：条件分岐', b3_desc: '論理的思考。', b4: '初級：ループ', b4_desc: '繰り返しの自動化。', i1: '中級：データ構造', i1_desc: '複雑なデータの整理。', i2: '中級：関数', i2_desc: '再利用可能なコードブロック。', i3: '中級：ファイル操作', i3_desc: '読み書きとエラー処理。', p1: '上級：OOP', p1_desc: 'オブジェクト指向プログラミング。', p2: '上級：高度な機能', p2_desc: 'Pythonらしい書き方。' },
+        lessons: { install: 'Pythonのインストール', hello: 'Hello World', print: 'Print関数', comments: 'コメント', math: '基礎数学', var_what: '変数とは？', strings: '文字列 (String)', ints: '整数', floats: '浮動小数点', bools: 'ブール値', convert: '型変換', input: 'ユーザー入力', lists: 'リスト入門', funcs: '関数の定義', classes: 'クラスとオブジェクト' }
+    },
+    exam: { ...en.exam, title: '試験会場', mock: '模擬試験', practice: '練習問題', start: '試験開始', score: 'スコア', passed: '合格', failed: '不合格', quit: '終了' },
+    game: { ...en.game, title: 'Pythonアーケード', start: 'ゲーム開始', gameOver: 'ゲームオーバー', score: 'スコア', playAgain: 'もう一度', explanation: '解説', modes: { trivia: { title: 'トリビア', desc: '一般知識テスト' }, bug: { title: 'バグハンター', desc: 'エラーを見つける' }, sprint: { title: '構文スプリント', desc: 'スピード勝負' } }, levels: { beginner: '初級', intermediate: '中級', professional: '上級' } },
+    notebook: { ...en.notebook, title: 'マイノート', sharedTitle: '共有ノート', newNote: '新規ノート', save: '保存', categories: { Study: '学習', Work: '仕事', Daily: '日常', Info: '情報' } },
+    reference: { ...en.reference, basics: '目次', sections: { core: 'カリキュラム', practical: '実践応用', novice: '初級', apprentice: '中級', grandmaster: '上級', daily: '日常', school: '学校', work: '仕事', code: 'コード集' }, topics: { variables: '変数', datatypes: 'データ型', lists: 'リスト', loops: 'ループ', functions: '関数', conditionals: '条件分岐', dictionaries: '辞書', scope: 'スコープ', sets: '集合', files: 'ファイル操作', errors: 'エラー処理', modules: 'モジュール', oop: 'OOP基礎', decorators: 'デコレータ', generators: 'ジェネレータ', context: 'コンテキスト', concurrency: '並行処理', metaprog: 'メタプログラミング', patterns: 'デザインパターン', chores: '家事自動化', files_org: 'ファイル整理', emails: 'メール送信', math: '数学', plotting: 'グラフ描画', flashmaker: 'カード作成', excel: 'Excel自動化', scraping: 'スクレイピング', pdf: 'PDF操作', oneliners: 'ワンライナー', regex: '正規表現', algos: 'アルゴリズム' }, desc: { variables: 'データの保存', datatypes: '文字列、整数など', lists: 'アイテムの集合', loops: '繰り返し処理', functions: '再利用可能なコード', conditionals: 'If/Elseロジック', dictionaries: 'キーと値' } },
+    profile: { ...en.profile, title: 'プロフィール設定', fullName: '名前', bio: '自己紹介', save: '保存する', saved: '保存しました', autoTranslate: '自動翻訳', referral: '友達紹介', referralDesc: 'リンクをシェア。友達が1000XPに達すると、両方に100XPプレゼント！', copyReferral: 'リンクをコピー', webLink: 'Webリンク', appPrefs: 'アプリ設定', locationDetect: '位置情報 (IP検出)', genderOpts: { male: '男性', female: '女性', other: 'その他', prefer: '回答しない' } },
+    community: { ...en.community, title: '学習グループ', create: 'グループ作成', join: '参加', classroom: { ...en.community.classroom, translate: '翻訳', original: '原文', conversation: '会話', voice: 'ボイス', focus: '集中' } },
+    subscription: { ...en.subscription, title: 'プレミアム', popular: '一番人気', trial: '7日間無料体験中', weekly: '週間', monthly: '月間', yearly: '年間', lifetime: '無期限', redeem: { ...en.subscription.redeem, title: 'XP交換', balance: '残高', btn: '交換' } },
+    search: { ...en.search, title: 'コード辞書', desc: 'Pythonのキーワードを検索', placeholder: '例：print, len...', button: '検索', syntax: '構文', example: '例' },
+    flashcards: { ...en.flashcards, newDeck: '新しいデッキ', generate: '生成', flip: 'タップして反転', syntax: '構文' },
+    leaderboard: { ...en.leaderboard, title: 'ランキング', regions: { Global: '世界', Asia: 'アジア', Europe: 'ヨーロッパ', Americas: 'アメリカ', Local: '国内' } },
+    download: { ...en.download, title: 'どこでもPyFlow', desc: '全てのデバイスで同期', iosDesc: 'iPhone & iPad', androidDesc: 'スマホ & タブレット', desktopDesc: 'Windows, macOS, Linux', webDesc: 'ブラウザアクセス' }
+};
+
+const kr = {
+    ...en,
+    nav: {
+      dashboard: '대시보드', course: '코스', exam: '시험', reference: '참고서', game: '아케이드', leaderboard: '랭킹', community: '커뮤니티', notebook: '노트북', flashcards: '플래시카드', chat: 'Py선생님', analyzer: '코드 분석기', search: '사전', download: '다운로드', profile: '프로필', logout: '로그아웃', theme: '테마', nativeLang: '언어 설정', subscription: '프리미엄', feedback: '피드백', version: '버전', dailyProgress: '일일 진행', upgrade: '업그레이드'
+    },
+    auth: { ...en.auth, getStarted: '시작하기', signIn: '로그인', signUp: '회원가입', welcomeBack: '환영합니다', verifyBtn: '인증 및 계속' },
+    dashboard: { ...en.dashboard, hello: '안녕하세요', subtitle: '파이썬 마스터가 되어보세요!', dailyXp: '오늘의 XP', dailyTip: '오늘의 팁', clockIn: '출석체크', dailyActions: '오늘의 할 일', missions: '미션', collect: '받기', collected: '완료', missionTitles: { m_d1: '매일 출석체크', m_d2: '마이크로 레슨 1개 완료', m_d3: '버그 몬스터 처치 (퀴즈)', m_d4: '코드 노트 작성', m_w1: '코드 마라톤: 3 레슨', m_w2: '아케이드 퍼펙트 점수', m_w3: '초대 보너스: 친구 1k XP', m_w4: '코드 분석 5회', m_m1: '모듈 마스터', m_m2: '1000 XP 획득', m_y1: '그랜드마스터 등급 달성', m_y2: '365일 연속 출석' }, features: { ...en.dashboard.features, course: { title: '인터랙티브 코스', desc: '단계별 애니메이션 레슨' }, reference: { title: '참고서', desc: '기초 마스터하기' }, game: { title: '파이썬 아케이드', desc: '퀴즈 풀고 XP 획득' } } },
+    course: { 
+        ...en.course, title: '파이썬 여정', start: '학습 시작', locked: '잠김', completed: '완료', nextLesson: '다음 레슨', 
+        moduleTitles: { b1: '초급: 첫걸음', b1_desc: '첫 코드 작성하기.', b2: '초급: 변수', b2_desc: '데이터 저장 방법.', b3: '초급: 논리', b3_desc: '컴퓨터처럼 생각하기.', b4: '초급: 반복문', b4_desc: '작업 자동화.', i1: '중급: 데이터 구조', i1_desc: '복잡한 데이터 정리.', i2: '중급: 함수', i2_desc: '재사용 가능한 코드.', i3: '중급: 파일', i3_desc: '파일 읽기 및 쓰기.', p1: '고급: OOP', p1_desc: '객체 지향 프로그래밍.', p2: '고급: 심화', p2_desc: '파이썬다운 코딩.' },
+        lessons: { install: '파이썬 설치', hello: 'Hello World', print: 'Print 함수', comments: '주석', math: '기초 수학', var_what: '변수란?', strings: '문자열', ints: '정수', floats: '실수', bools: '불리언', convert: '형변환', input: '사용자 입력', lists: '리스트 기초', funcs: '함수 정의', classes: '클래스와 객체' }
+    },
+    game: { ...en.game, title: '파이썬 게임', start: '게임 시작', gameOver: '게임 오버', score: '점수', playAgain: '다시 하기', modes: { trivia: { title: '클래식 퀴즈', desc: '일반 상식 테스트' }, bug: { title: '버그 헌터', desc: '오류 찾기' }, sprint: { title: '문법 스프린트', desc: '스피드 퀴즈' } }, levels: { beginner: '초급', intermediate: '중급', professional: '고급' } },
+    notebook: { ...en.notebook, title: '내 노트', sharedTitle: '공유 노트', categories: { Study: '공부', Work: '업무', Daily: '일상', Info: '정보' } },
+    profile: { ...en.profile, title: '설정', save: '저장', referral: '친구 초대', referralDesc: '친구 초대하고 100XP 받으세요!', copyReferral: '링크 복사', webLink: '웹 링크', appPrefs: '앱 설정', locationDetect: '위치 (IP 감지)', genderOpts: { male: '남성', female: '여성', other: '기타', prefer: '비공개' } },
+    community: { ...en.community, title: '스터디 그룹', create: '그룹 만들기', join: '가입', classroom: { ...en.community.classroom, translate: '번역', original: '원본' } },
+    subscription: { ...en.subscription, title: '프리미엄 구독', popular: '인기', trial: '7일 무료 체험 중', redeem: { ...en.subscription.redeem, title: 'XP 교환', balance: '내 잔액', btn: '교환' } },
+    reference: { ...en.reference, basics: '목차', sections: { core: '핵심 커리큘럼', practical: '실전 응용', novice: '초급', apprentice: '중급', grandmaster: '고급', daily: '일상', school: '학교', work: '업무', code: '코드 뱅크' }, topics: { variables: '변수', datatypes: '데이터 타입', lists: '리스트', loops: '반복문', functions: '함수', conditionals: '조건문', dictionaries: '딕셔너리', scope: '스코프', sets: '집합', files: '파일 처리', errors: '에러 처리', modules: '모듈', oop: 'OOP 기초', decorators: '데코레이터', generators: '제너레이터', context: '컨텍스트 매니저', concurrency: '동시성', metaprog: '메타프로그래밍', patterns: '디자인 패턴', chores: '집안일 자동화', files_org: '파일 정리', emails: '이메일 발송', math: '수학 풀이', plotting: '그래프 그리기', flashmaker: '카드 제작', excel: '엑셀 자동화', scraping: '웹 크롤링', pdf: 'PDF 처리', oneliners: '한 줄 코드', regex: '정규표현식', algos: '알고리즘' }, desc: { variables: '데이터 저장', datatypes: '문자열, 정수 등', lists: '데이터 모음', loops: '반복 작업', functions: '코드 블록', conditionals: '조건 로직', dictionaries: '키-값 쌍' } },
+    search: { ...en.search, title: '코드 사전', desc: '파이썬 키워드 검색', placeholder: '예: print...', button: '검색', syntax: '문법', example: '예시' },
+    flashcards: { ...en.flashcards, newDeck: '새 덱', generate: '생성', flip: '뒤집기', syntax: '문법' },
+    leaderboard: { ...en.leaderboard, title: '글로벌 랭킹', regions: { Global: '글로벌', Asia: '아시아', Europe: '유럽', Americas: '아메리카', Local: '내 국가' } },
+    download: { ...en.download, title: '어디서나 PyFlow', desc: '모든 기기에서 진행 상황 동기화', iosDesc: 'iPhone & iPad', androidDesc: '스마트폰 & 태블릿', desktopDesc: 'Windows, macOS, Linux', webDesc: '브라우저 접속' }
+};
+
+const id = {
+    ...en,
+    nav: {
+      dashboard: 'Beranda', course: 'Kursus', exam: 'Ujian', reference: 'Referensi', game: 'Arcade', leaderboard: 'Peringkat', community: 'Komunitas', notebook: 'Catatan', flashcards: 'Kartu Konsep', chat: 'Py-Sensei', analyzer: 'Analisis Kode', search: 'Kamus', download: 'Unduh', profile: 'Profil', logout: 'Keluar', theme: 'Tema', nativeLang: 'Bahasa', subscription: 'Premium', feedback: 'Masukan', version: 'Ver', dailyProgress: 'Progres Harian', upgrade: 'Tingkatkan'
+    },
+    auth: { ...en.auth, getStarted: 'Mulai', signIn: 'Masuk', signUp: 'Daftar', welcomeBack: 'Selamat Datang Kembali', verifyBtn: 'Verifikasi' },
+    dashboard: { ...en.dashboard, hello: 'Halo', subtitle: 'Siap belajar Python?', dailyXp: 'XP Harian', clockIn: 'Absen', dailyActions: 'Aksi Harian', missions: 'Misi', collect: 'Ambil', collected: 'Diambil', missionTitles: { m_d1: 'Absen Harian', m_d2: 'Selesaikan 1 Pelajaran', m_d3: 'Kalahkan Bug (Kuis)', m_d4: 'Tulis Catatan', m_w1: 'Maraton Kode: 3 Pelajaran', m_w2: 'Skor Sempurna Arcade', m_w3: 'Bonus Referal: Teman capai 1k XP', m_w4: 'Analisis 5 Kode', m_m1: 'Kuasai Modul', m_m2: 'Dapatkan 1000 XP', m_y1: 'Raih Peringkat Ahli', m_y2: '365 Hari Beruntun' }, features: { ...en.dashboard.features, course: { title: 'Kursus Interaktif', desc: 'Pelajaran animasi.' }, reference: { title: 'Buku Referensi', desc: 'Kuasai dasar-dasar.' }, game: { title: 'Arcade Python', desc: 'Main kuis & dapatkan XP.' } } },
+    course: { 
+        ...en.course, title: 'Perjalanan Python', start: 'Mulai', locked: 'Terkunci', completed: 'Selesai', nextLesson: 'Lanjut', 
+        moduleTitles: { b1: 'Pemula: Langkah Awal', b1_desc: 'Kode pertama Anda.', b2: 'Pemula: Variabel', b2_desc: 'Menyimpan data.', b3: 'Pemula: Logika', b3_desc: 'Berpikir seperti komputer.', b4: 'Pemula: Loop', b4_desc: 'Otomatisasi.', i1: 'Menengah: Struktur Data', i1_desc: 'Mengatur data.', i2: 'Menengah: Fungsi', i2_desc: 'Kode yang dapat digunakan kembali.', i3: 'Menengah: File', i3_desc: 'Membaca file.', p1: 'Ahli: OOP', p1_desc: 'Pemrograman Berorientasi Objek.', p2: 'Ahli: Fitur Lanjutan', p2_desc: 'Fitur Python canggih.' },
+        lessons: { install: 'Instal Python', hello: 'Hello World', print: 'Fungsi Print', comments: 'Komentar', math: 'Matematika Dasar', var_what: 'Apa itu Variabel?', strings: 'String', ints: 'Integer', floats: 'Desimal', bools: 'Boolean', convert: 'Konversi Tipe', input: 'Input User', lists: 'List', funcs: 'Fungsi', classes: 'Kelas & Objek' }
+    },
+    game: { ...en.game, title: 'Arcade Python', start: 'Main', gameOver: 'Selesai', score: 'Skor', playAgain: 'Main Lagi', modes: { trivia: { title: 'Trivia', desc: 'Pengetahuan umum.' }, bug: { title: 'Pemburu Bug', desc: 'Cari kesalahan.' }, sprint: { title: 'Sprint Sintaks', desc: 'Cepat tepat.' } }, levels: { beginner: 'Pemula', intermediate: 'Menengah', professional: 'Ahli' } },
+    notebook: { ...en.notebook, title: 'Catatan Saya', sharedTitle: 'Catatan Bersama', categories: { Study: 'Belajar', Work: 'Kerja', Daily: 'Harian', Info: 'Info' } },
+    profile: { ...en.profile, title: 'Pengaturan', save: 'Simpan', referral: 'Undang Teman', referralDesc: 'Undang teman, dapatkan 100 XP!', copyReferral: 'Salin Tautan', webLink: 'Tautan Web', appPrefs: 'Preferensi Aplikasi', locationDetect: 'Lokasi (IP Network)', genderOpts: { male: 'Pria', female: 'Wanita', other: 'Lainnya', prefer: 'Rahasia' } },
+    community: { ...en.community, title: 'Grup Belajar', create: 'Buat Grup', join: 'Gabung', classroom: { ...en.community.classroom, translate: 'Terjemahkan', original: 'Asli' } },
+    subscription: { ...en.subscription, title: 'Langganan Premium', popular: 'Populer', trial: 'Percobaan 7 Hari', redeem: { ...en.subscription.redeem, title: 'Tukar XP', balance: 'Saldo', btn: 'Tukar' } },
+    reference: { ...en.reference, basics: 'Daftar Isi', sections: { core: 'Kurikulum Inti', practical: 'Aplikasi Praktis', novice: 'Pemula', apprentice: 'Menengah', grandmaster: 'Ahli', daily: 'Harian', school: 'Sekolah', work: 'Kerja', code: 'Kode' }, topics: { variables: 'Variabel', datatypes: 'Tipe Data', lists: 'List', loops: 'Loop', functions: 'Fungsi', conditionals: 'Kondisional', dictionaries: 'Kamus', scope: 'Scope', sets: 'Set', files: 'File', errors: 'Error', modules: 'Modul', oop: 'OOP', decorators: 'Dekorator', generators: 'Generator', context: 'Context', concurrency: 'Konkurensi', metaprog: 'Meta', patterns: 'Pola', chores: 'Pekerjaan Rumah', files_org: 'Org File', emails: 'Email', math: 'Matematika', plotting: 'Plotting', flashmaker: 'Pembuat Kartu', excel: 'Excel', scraping: 'Scraping', pdf: 'PDF', oneliners: 'Satu Baris', regex: 'Regex', algos: 'Algoritma' }, desc: { variables: 'Simpan data', datatypes: 'String, Int', lists: 'Koleksi', loops: 'Ulangi', functions: 'Blok kode', conditionals: 'Logika If', dictionaries: 'Key-value' } },
+    search: { ...en.search, title: 'Kamus Kode', desc: 'Cari kata kunci.', placeholder: 'Contoh: print...', button: 'Cari', syntax: 'Sintaks', example: 'Contoh' },
+    flashcards: { ...en.flashcards, newDeck: 'Dek Baru', generate: 'Buat', flip: 'Balik', syntax: 'Sintaks' },
+    leaderboard: { ...en.leaderboard, title: 'Peringkat Global', regions: { Global: 'Global', Asia: 'Asia', Europe: 'Eropa', Americas: 'Amerika', Local: 'Lokal' } },
+    download: { ...en.download, title: 'Bawa PyFlow', desc: 'Sinkronisasi di semua perangkat', iosDesc: 'iPhone & iPad', androidDesc: 'Ponsel & Tablet', desktopDesc: 'Windows, macOS, Linux', webDesc: 'Akses Browser' }
+};
+
+const th = {
+    ...en,
+    nav: {
+      dashboard: 'แดชบอร์ด', course: 'บทเรียน', exam: 'การสอบ', reference: 'หนังสืออ้างอิง', game: 'เกม', leaderboard: 'อันดับ', community: 'ชุมชน', notebook: 'สมุดบันทึก', flashcards: 'แฟลชการ์ด', chat: 'ครูฝึก', analyzer: 'ตัววิเคราะห์', search: 'พจนานุกรม', download: 'ดาวน์โหลด', profile: 'โปรไฟล์', logout: 'ออกจากระบบ', theme: 'ธีม', nativeLang: 'ภาษา', subscription: 'พรีเมียม', feedback: 'ข้อเสนอแนะ', version: 'เวอร์ชั่น', dailyProgress: 'ความคืบหน้า', upgrade: 'อัปเกรด'
+    },
+    auth: { ...en.auth, getStarted: 'เริ่มต้นใช้งาน', signIn: 'เข้าสู่ระบบ', signUp: 'ลงทะเบียน', welcomeBack: 'ยินดีต้อนรับกลับ', verifyBtn: 'ยืนยัน' },
+    dashboard: { ...en.dashboard, hello: 'สวัสดี', subtitle: 'พร้อมเรียน Python หรือยัง?', dailyXp: 'XP รายวัน', clockIn: 'เช็คอิน', dailyActions: 'สิ่งที่ต้องทำ', missions: 'ภารกิจ', collect: 'รับ', collected: 'รับแล้ว', missionTitles: { m_d1: 'เช็คอินรายวัน', m_d2: 'เรียน 1 บท', m_d3: 'ปราบมอนสเตอร์บั๊ก', m_d4: 'เขียนโน้ต', m_w1: 'โค้ดมาราธอน', m_w2: 'คะแนนเต็มอาเขต', m_w3: 'โบนัสแนะนำเพื่อน', m_w4: 'วิเคราะห์ 5 โค้ด', m_m1: 'เชี่ยวชาญโมดูล', m_m2: 'รับ 1000 XP', m_y1: 'ถึงระดับแกรนด์มาสเตอร์', m_y2: 'ต่อเนื่อง 365 วัน' }, features: { ...en.dashboard.features, course: { title: 'บทเรียนแบบโต้ตอบ', desc: 'เรียนรู้ทีละขั้นตอน' }, reference: { title: 'หนังสืออ้างอิง', desc: 'เรียนรู้พื้นฐาน' }, game: { title: 'เกม Python', desc: 'เล่นเกมรับ XP' } } },
+    course: { 
+        ...en.course, title: 'เส้นทาง Python', start: 'เริ่มเรียน', locked: 'ล็อค', completed: 'เสร็จสิ้น', nextLesson: 'บทต่อไป', 
+        moduleTitles: { b1: 'มือใหม่: ก้าวแรก', b1_desc: 'เขียนโค้ดแรกของคุณ', b2: 'มือใหม่: ตัวแปร', b2_desc: 'การเก็บข้อมูล', b3: 'มือใหม่: ตรรกะ', b3_desc: 'การคิดแบบคอมพิวเตอร์', b4: 'มือใหม่: ลูป', b4_desc: 'การทำซ้ำ', i1: 'ระดับกลาง: โครงสร้างข้อมูล', i1_desc: 'การจัดการข้อมูล', i2: 'ระดับกลาง: ฟังก์ชัน', i2_desc: 'โค้ดที่ใช้ซ้ำได้', i3: 'ระดับกลาง: ไฟล์', i3_desc: 'การอ่านและเขียนไฟล์', p1: 'ระดับสูง: OOP', p1_desc: 'การเขียนโปรแกรมเชิงวัตถุ', p2: 'ระดับสูง: ขั้นสูง', p2_desc: 'ฟีเจอร์ขั้นสูง' },
+        lessons: { install: 'ติดตั้ง Python', hello: 'Hello World', print: 'ฟังก์ชัน Print', comments: 'คอมเมนต์', math: 'คณิตศาสตร์พื้นฐาน', var_what: 'ตัวแปรคืออะไร?', strings: 'สตริง', ints: 'จำนวนเต็ม', floats: 'ทศนิยม', bools: 'บูลีน', convert: 'แปลงชนิดข้อมูล', input: 'รับค่า', lists: 'ลิสต์', funcs: 'ฟังก์ชัน', classes: 'คลาส' }
+    },
+    game: { ...en.game, title: 'เกม Python', start: 'เริ่มเกม', gameOver: 'จบเกม', score: 'คะแนน', playAgain: 'เล่นอีกครั้ง', modes: { trivia: { title: 'ความรู้ทั่วไป', desc: 'ทดสอบความรู้' }, bug: { title: 'ล่าบั๊ก', desc: 'หาข้อผิดพลาด' }, sprint: { title: 'ไวยากรณ์', desc: 'คำถามด่วน' } }, levels: { beginner: 'มือใหม่', intermediate: 'ระดับกลาง', professional: 'มืออาชีพ' } },
+    notebook: { ...en.notebook, title: 'บันทึกของฉัน', sharedTitle: 'บันทึกที่แชร์', categories: { Study: 'เรียน', Work: 'งาน', Daily: 'ทั่วไป', Info: 'ข้อมูล' } },
+    profile: { ...en.profile, title: 'การตั้งค่า', save: 'บันทึก', referral: 'แนะนำเพื่อน', referralDesc: 'แนะนำเพื่อน รับ 100 XP!', copyReferral: 'คัดลอกลิงก์', webLink: 'เว็บลิงก์', appPrefs: 'การตั้งค่าแอป', locationDetect: 'ตำแหน่ง (ตรวจจับ IP)', genderOpts: { male: 'ชาย', female: 'หญิง', other: 'อื่นๆ', prefer: 'ไม่ระบุ' } },
+    community: { ...en.community, title: 'กลุ่มเรียนรู้', create: 'สร้างกลุ่ม', join: 'เข้าร่วม', classroom: { ...en.community.classroom, translate: 'แปลภาษา', original: 'ต้นฉบับ' } },
+    subscription: { ...en.subscription, title: 'สมัครพรีเมียม', popular: 'ยอดนิยม', trial: 'ทดลองฟรี 7 วัน', redeem: { ...en.subscription.redeem, title: 'แลก XP', balance: 'ยอดคงเหลือ', btn: 'แลก' } },
+    reference: { ...en.reference, basics: 'สารบัญ', sections: { core: 'หลักสูตรหลัก', practical: 'การใช้งานจริง', novice: 'มือใหม่', apprentice: 'ระดับกลาง', grandmaster: 'ระดับสูง', daily: 'ประจำวัน', school: 'โรงเรียน', work: 'งาน', code: 'โค้ด' }, topics: { variables: 'ตัวแปร', datatypes: 'ชนิดข้อมูล', lists: 'ลิสต์', loops: 'ลูป', functions: 'ฟังก์ชัน', conditionals: 'เงื่อนไข', dictionaries: 'พจนานุกรม', scope: 'ขอบเขต', sets: 'เซต', files: 'ไฟล์', errors: 'ข้อผิดพลาด', modules: 'โมดูล', oop: 'OOP', decorators: 'Decorators', generators: 'Generators', context: 'Context', concurrency: 'Concurrency', metaprog: 'Meta', patterns: 'Patterns', chores: 'งานบ้าน', files_org: 'จัดการไฟล์', emails: 'อีเมล', math: 'คณิตศาสตร์', plotting: 'พล็อต', flashmaker: 'การ์ด', excel: 'Excel', scraping: 'Scraping', pdf: 'PDF', oneliners: 'บรรทัดเดียว', regex: 'Regex', algos: 'อัลกอริทึม' }, desc: { variables: 'เก็บข้อมูล', datatypes: 'ข้อความ, ตัวเลข', lists: 'รายการ', loops: 'ทำซ้ำ', functions: 'โค้ดบล็อก', conditionals: 'ตรรกะ', dictionaries: 'คู่คีย์-ค่า' } },
+    search: { ...en.search, title: 'พจนานุกรมโค้ด', desc: 'ค้นหาคำสั่ง Python', placeholder: 'เช่น print...', button: 'ค้นหา', syntax: 'ไวยากรณ์', example: 'ตัวอย่าง' },
+    flashcards: { ...en.flashcards, newDeck: 'ชุดใหม่', generate: 'สร้าง', flip: 'พลิก', syntax: 'ไวยากรณ์' },
+    leaderboard: { ...en.leaderboard, title: 'อันดับโลก', regions: { Global: 'ทั่วโลก', Asia: 'เอเชีย', Europe: 'ยุโรป', Americas: 'อเมริกา', Local: 'ในประเทศ' } },
+    download: { ...en.download, title: 'เรียนได้ทุกที่', desc: 'ซิงค์ข้อมูลทุกอุปกรณ์', iosDesc: 'iPhone & iPad', androidDesc: 'มือถือ & แท็บเล็ต', desktopDesc: 'Windows, macOS, Linux', webDesc: 'เข้าผ่านเว็บ' }
+};
+
+const vn = {
+    ...en,
+    nav: {
+      dashboard: 'Trang chủ', course: 'Khóa học', exam: 'Bài thi', reference: 'Tài liệu', game: 'Trò chơi', leaderboard: 'Xếp hạng', community: 'Cộng đồng', notebook: 'Sổ tay', flashcards: 'Thẻ ghi nhớ', chat: 'Trợ lý AI', analyzer: 'Phân tích mã', search: 'Từ điển', download: 'Tải về', profile: 'Hồ sơ', logout: 'Đăng xuất', theme: 'Giao diện', nativeLang: 'Ngôn ngữ', subscription: 'Gói cao cấp', feedback: 'Phản hồi', version: 'Ver', dailyProgress: 'Tiến độ', upgrade: 'Nâng cấp'
+    },
+    auth: { ...en.auth, getStarted: 'Bắt đầu', signIn: 'Đăng nhập', signUp: 'Đăng ký', welcomeBack: 'Chào mừng trở lại', verifyBtn: 'Xác minh' },
+    dashboard: { ...en.dashboard, hello: 'Xin chào', subtitle: 'Sẵn sàng học Python chưa?', dailyXp: 'XP hôm nay', clockIn: 'Điểm danh', dailyActions: 'Hoạt động', missions: 'Nhiệm vụ', collect: 'Nhận', collected: 'Đã nhận', missionTitles: { m_d1: 'Điểm danh hàng ngày', m_d2: 'Học 1 bài nhỏ', m_d3: 'Diệt lỗi (Quiz)', m_d4: 'Viết ghi chú', m_w1: 'Marathon Mã: 3 bài', m_w2: 'Điểm tuyệt đối Arcade', m_w3: 'Thưởng giới thiệu', m_w4: 'Phân tích 5 đoạn mã', m_m1: 'Thành thạo Module', m_m2: 'Kiếm 1000 XP', m_y1: 'Đạt hạng Cao thủ', m_y2: 'Chuỗi 365 ngày' }, features: { ...en.dashboard.features, course: { title: 'Khóa học tương tác', desc: 'Bài học hoạt hình.' }, reference: { title: 'Tài liệu tham khảo', desc: 'Nắm vững cơ bản.' }, game: { title: 'Trò chơi Python', desc: 'Chơi và nhận XP.' } } },
+    course: { 
+        ...en.course, title: 'Hành trình Python', start: 'Bắt đầu', locked: 'Đã khóa', completed: 'Hoàn thành', nextLesson: 'Bài tiếp theo', 
+        moduleTitles: { b1: 'Nhập môn: Bước đầu', b1_desc: 'Dòng mã đầu tiên.', b2: 'Nhập môn: Biến', b2_desc: 'Lưu trữ dữ liệu.', b3: 'Nhập môn: Logic', b3_desc: 'Tư duy máy tính.', b4: 'Nhập môn: Vòng lặp', b4_desc: 'Tự động hóa.', i1: 'Trung cấp: Cấu trúc dữ liệu', i1_desc: 'Tổ chức dữ liệu.', i2: 'Trung cấp: Hàm', i2_desc: 'Mã tái sử dụng.', i3: 'Trung cấp: File', i3_desc: 'Đọc ghi file.', p1: 'Cao cấp: OOP', p1_desc: 'Lập trình hướng đối tượng.', p2: 'Cao cấp: Nâng cao', p2_desc: 'Tính năng Python nâng cao.' },
+        lessons: { install: 'Cài đặt Python', hello: 'Hello World', print: 'Hàm Print', comments: 'Ghi chú', math: 'Toán cơ bản', var_what: 'Biến là gì?', strings: 'Chuỗi', ints: 'Số nguyên', floats: 'Số thực', bools: 'Boolean', convert: 'Chuyển đổi kiểu', input: 'Nhập liệu', lists: 'Danh sách', funcs: 'Hàm', classes: 'Lớp & Đối tượng' }
+    },
+    exam: { ...en.exam, title: 'Phòng thi', desc: 'Chuẩn bị chứng chỉ với đề thi thử.', mock: 'Thi thử', practice: 'Luyện tập', start: 'Bắt đầu', score: 'Điểm số', passed: 'Đậu', failed: 'Trượt', quit: 'Thoát' },
+    game: { ...en.game, title: 'Trò chơi Python', start: 'Chơi ngay', gameOver: 'Kết thúc', score: 'Điểm', playAgain: 'Chơi lại', modes: { trivia: { title: 'Đố vui', desc: 'Kiến thức chung.' }, bug: { title: 'Săn lỗi', desc: 'Tìm lỗi sai.' }, sprint: { title: 'Tốc độ', desc: 'Câu hỏi nhanh.' } }, levels: { beginner: 'Nhập môn', intermediate: 'Trung cấp', professional: 'Cao cấp' } },
+    notebook: { ...en.notebook, title: 'Ghi chú của tôi', sharedTitle: 'Ghi chú chia sẻ', categories: { Study: 'Học tập', Work: 'Công việc', Daily: 'Hàng ngày', Info: 'Thông tin' } },
+    profile: { ...en.profile, title: 'Cài đặt', save: 'Lưu', referral: 'Giới thiệu bạn bè', referralDesc: 'Mời bạn bè, nhận 100 XP!', copyReferral: 'Sao chép liên kết', webLink: 'Liên kết Web', appPrefs: 'Tùy chọn ứng dụng', locationDetect: 'Vị trí (Mạng IP)', genderOpts: { male: 'Nam', female: 'Nữ', other: 'Khác', prefer: 'Ẩn' } },
+    community: { ...en.community, title: 'Nhóm học tập', create: 'Tạo nhóm', join: 'Tham gia', classroom: { ...en.community.classroom, translate: 'Dịch', original: 'Gốc' } },
+    subscription: { ...en.subscription, title: 'Nâng cấp Premium', popular: 'Phổ biến nhất', trial: 'Dùng thử 7 ngày', redeem: { ...en.subscription.redeem, title: 'Đổi XP', balance: 'Số dư', btn: 'Đổi' } },
+    reference: { ...en.reference, basics: 'Mục lục', sections: { core: 'Chương trình chính', practical: 'Ứng dụng thực tế', novice: 'Nhập môn', apprentice: 'Trung cấp', grandmaster: 'Cao cấp', daily: 'Hàng ngày', school: 'Trường học', work: 'Công việc', code: 'Mã nguồn' }, topics: { variables: 'Biến', datatypes: 'Kiểu dữ liệu', lists: 'Danh sách', loops: 'Vòng lặp', functions: 'Hàm', conditionals: 'Điều kiện', dictionaries: 'Từ điển', scope: 'Phạm vi', sets: 'Tập hợp', files: 'Tệp tin', errors: 'Lỗi', modules: 'Mô-đun', oop: 'OOP', decorators: 'Trang trí', generators: 'Trình tạo', context: 'Ngữ cảnh', concurrency: 'Đồng thời', metaprog: 'Meta', patterns: 'Mẫu', chores: 'Việc nhà', files_org: 'Sắp xếp file', emails: 'Email', math: 'Toán học', plotting: 'Vẽ đồ thị', flashmaker: 'Thẻ học', excel: 'Excel', scraping: 'Cào web', pdf: 'PDF', oneliners: 'Một dòng', regex: 'Regex', algos: 'Thuật toán' }, desc: { variables: 'Lưu trữ dữ liệu', datatypes: 'Chuỗi, Số', lists: 'Tập hợp', loops: 'Lặp lại', functions: 'Khối mã', conditionals: 'Logic If/Else', dictionaries: 'Khóa-Giá trị' } },
+    search: { ...en.search, title: 'Từ điển mã', desc: 'Tìm kiếm từ khóa Python.', placeholder: 'Ví dụ: print...', button: 'Tìm', syntax: 'Cú pháp', example: 'Ví dụ' },
+    flashcards: { ...en.flashcards, newDeck: 'Bộ thẻ mới', generate: 'Tạo', flip: 'Lật', syntax: 'Cú pháp' },
+    leaderboard: { ...en.leaderboard, title: 'Xếp hạng toàn cầu', regions: { Global: 'Toàn cầu', Asia: 'Châu Á', Europe: 'Châu Âu', Americas: 'Châu Mỹ', Local: 'Trong nước' } },
+    download: { ...en.download, title: 'Học Mọi Nơi', desc: 'Đồng bộ hóa trên mọi thiết bị', iosDesc: 'iPhone & iPad', androidDesc: 'Điện thoại & MTB', desktopDesc: 'Windows, macOS, Linux', webDesc: 'Trình duyệt' }
+};
+
+const mm = {
+    ...en,
+    nav: {
+      dashboard: 'ဒက်ရှ်ဘုတ်', course: 'သင်ခန်းစာ', exam: 'စာမေးပွဲ', reference: 'ကိုးကားစာအုပ်', game: 'ဂိမ်း', leaderboard: 'အဆင့်သတ်မှတ်ချက်', community: 'အဖွဲ့အစည်း', notebook: 'မှတ်စု', flashcards: 'ကတ်များ', chat: 'ဆရာ', analyzer: 'ကုတ်စစ်ဆေး', search: 'ရှာဖွေရန်', download: 'ဒေါင်းလုဒ်', profile: 'ပရိုဖိုင်', logout: 'ထွက်ရန်', theme: 'အပြင်အဆင်', nativeLang: 'ဘာသာစကား', subscription: 'ပရီမီယံ', feedback: 'အကြံပြုရန်', version: 'ဗားရှင်း', dailyProgress: 'နေ့စဉ်တိုးတက်မှု', upgrade: 'အဆင့်မြှင့်'
+    },
+    auth: { ...en.auth, getStarted: 'စတင်ရန်', signIn: 'ဝင်ရန်', signUp: 'အကောင့်ဖွင့်', welcomeBack: 'ကြိုဆိုပါတယ်', verifyBtn: 'အတည်ပြု' },
+    dashboard: { ...en.dashboard, hello: 'မင်္ဂလာပါ', subtitle: 'Python လေ့လာရန် အဆင်သင့်ဖြစ်ပြီလား', dailyXp: 'နေ့စဉ် XP', clockIn: 'စာရင်းသွင်း', dailyActions: 'နေ့စဉ်အလုပ်များ', missions: 'တာဝန်များ', collect: 'ရယူ', collected: 'ရယူပြီး', missionTitles: { m_d1: 'နေ့စဉ်မှတ်ပုံတင်', m_d2: 'သင်ခန်းစာ ၁ ခု', m_d3: 'ပဟေဠိဖြေပါ', m_d4: 'မှတ်စုရေးပါ', m_w1: 'ကုတ်မာရသွန်', m_w2: 'ဂိမ်းအမှတ်ပြည့်', m_w3: 'မိတ်ဆက်ဆုကြေး', m_w4: 'ကုတ် ၅ ခုစစ်ဆေး', m_m1: 'အခန်းပြီးမြောက်', m_m2: '1000 XP ရယူ', m_y1: 'ကျွမ်းကျင်အဆင့်', m_y2: '၃၆၅ ရက်ဆက်တိုက်' }, features: { ...en.dashboard.features, course: { title: 'သင်ခန်းစာ', desc: 'အဆင့်ဆင့်သင်ယူပါ။' }, reference: { title: 'ကိုးကားစာအုပ်', desc: 'အခြေခံများ။' }, game: { title: 'ဂိမ်း', desc: 'ကစားပြီး XP ရယူပါ။' } } },
+    course: { 
+        ...en.course, title: 'Python သင်ခန်းစာ', start: 'စတင်', locked: 'ပိတ်ထားသည်', completed: 'ပြီးစီး', nextLesson: 'နောက်တစ်ခု', 
+        moduleTitles: { b1: 'အစပြုသူ - အဆင့် ၁', b1_desc: 'ပထမဆုံး ကုတ်', b2: 'အစပြုသူ - ကိန်းရှင်များ', b2_desc: 'ဒေတာသိမ်းဆည်းခြင်း', b3: 'အစပြုသူ - ဆုံးဖြတ်ချက်', b3_desc: 'Logic', b4: 'အစပြုသူ - Loops', b4_desc: 'ထပ်ခါထပ်ခါ', i1: 'အလယ်အလတ် - ဒေတာ', i1_desc: 'ဖွဲ့စည်းပုံ', i2: 'အလယ်အလတ် - Functions', i2_desc: 'ပြန်လည်အသုံးပြုခြင်း', i3: 'အလယ်အလတ် - Files', i3_desc: 'ဖိုင်များ', p1: 'ကျွမ်းကျင် - OOP', p1_desc: 'OOP', p2: 'ကျွမ်းကျင် - အဆင့်မြင့်', p2_desc: 'အဆင့်မြင့်' },
+        lessons: { install: 'Python ထည့်သွင်းခြင်း', hello: 'Hello World', print: 'Print', comments: 'မှတ်ချက်များ', math: 'သင်္ချာ', var_what: 'Variable', strings: 'စာသား', ints: 'ကိန်းပြည့်', floats: 'ဒသမ', bools: 'Boolean', convert: 'ပြောင်းလဲခြင်း', input: 'Input', lists: 'Lists', funcs: 'Functions', classes: 'Classes' }
+    },
+    game: { ...en.game, title: 'ဂိမ်း', start: 'ကစားမည်', gameOver: 'ပြီးဆုံး', score: 'ရမှတ်', playAgain: 'ပြန်ကစား', modes: { trivia: { title: 'ပဟေဠိ', desc: 'ဗဟုသုတ' }, bug: { title: 'အမှားရှာ', desc: 'ပြင်ဆင်ပါ' }, sprint: { title: 'အမြန်', desc: 'အမြန်ဖြေ' } }, levels: { beginner: 'အစပြု', intermediate: 'အလယ်အလတ်', professional: 'ကျွမ်းကျင်' } },
+    notebook: { ...en.notebook, title: 'မှတ်စုများ', sharedTitle: 'မျှဝေထားသောမှတ်စု', categories: { Study: 'လေ့လာ', Work: 'အလုပ်', Daily: 'နေ့စဉ်', Info: 'အချက်အလက်' } },
+    profile: { ...en.profile, title: 'ပြင်ဆင်မှုများ', save: 'သိမ်းဆည်း', referral: 'သူငယ်ချင်းဖိတ်ရန်', referralDesc: 'သူငယ်ချင်းဖိတ်ပြီး 100 XP ရယူပါ', copyReferral: 'လင့်ခ်ကူးရန်', webLink: 'ဝက်ဘ်လင့်ခ်', appPrefs: 'အက်ပ်ပြင်ဆင်မှု', locationDetect: 'တည်နေရာ', genderOpts: { male: 'ကျား', female: 'မ', other: 'အခြား', prefer: 'မပြောလိုပါ' } },
+    community: { ...en.community, title: 'အဖွဲ့များ', create: 'အဖွဲ့တည်ဆောက်', join: 'ဝင်ရောက်', classroom: { ...en.community.classroom, translate: 'ဘာသာပြန်', original: 'မူရင်း' } },
+    subscription: { ...en.subscription, title: 'ပရီမီယံ', popular: 'လူကြိုက်များ', trial: '၇ ရက် အခမဲ့', redeem: { ...en.subscription.redeem, title: 'XP လဲလှယ်', balance: 'လက်ကျန်', btn: 'လဲလှယ်' } },
+    reference: { ...en.reference, basics: 'မာတိကာ', sections: { core: 'ပင်မ', practical: 'လက်တွေ့', novice: 'အစပြု', apprentice: 'အလယ်အလတ်', grandmaster: 'ကျွမ်းကျင်', daily: 'နေ့စဉ်', school: 'ကျောင်း', work: 'အလုပ်', code: 'ကုတ်' }, topics: { variables: 'ကိန်းရှင်များ', datatypes: 'အမျိုးအစားများ', lists: 'Lists', loops: 'Loops', functions: 'Functions', conditionals: 'Conditionals', dictionaries: 'Dictionaries', scope: 'Scope', sets: 'Sets', files: 'Files', errors: 'Errors', modules: 'Modules', oop: 'OOP', decorators: 'Decorators', generators: 'Generators', context: 'Context', concurrency: 'Concurrency', metaprog: 'Meta', patterns: 'Patterns', chores: 'အိမ်မှု', files_org: 'ဖိုင်စီမံ', emails: 'အီးမေးလ်', math: 'သင်္ချာ', plotting: 'Plotting', flashmaker: 'Flashcards', excel: 'Excel', scraping: 'Scraping', pdf: 'PDF', oneliners: 'One-Liners', regex: 'Regex', algos: 'Algorithms' }, desc: { variables: 'ဒေတာသိမ်းဆည်း', datatypes: 'စာသား၊ ကိန်းဂဏန်း', lists: 'စုစည်းမှု', loops: 'ထပ်ခါလုပ်ဆောင်', functions: 'ကုတ်ဘလောက်', conditionals: 'If/Else', dictionaries: 'Key-Value' } },
+    search: { ...en.search, title: 'ကုတ် အဘိဓာန်', desc: 'ရှာဖွေပါ', placeholder: 'ဥပမာ print...', button: 'ရှာ', syntax: 'Syntax', example: 'ဥပမာ' },
+    flashcards: { ...en.flashcards, newDeck: 'ကတ်အသစ်', generate: 'ပြုလုပ်', flip: 'လှန်ပါ', syntax: 'Syntax' },
+    leaderboard: { ...en.leaderboard, title: 'ကမ္ဘာလုံးဆိုင်ရာ', regions: { Global: 'ကမ္ဘာ', Asia: 'အာရှ', Europe: 'ဥရောပ', Americas: 'အမေရိက', Local: 'ပြည်တွင်း' } },
+    download: { ...en.download, title: 'နေရာတိုင်းတွင် PyFlow', desc: 'စက်ပစ္စည်းအားလုံးတွင် ချိတ်ဆက်ပါ', iosDesc: 'iPhone & iPad', androidDesc: 'ဖုန်း & တက်ဘလက်', desktopDesc: 'Windows, macOS, Linux', webDesc: 'ဘရောက်ဆာ' }
+};
+
+const ar = {
+    ...en,
+    nav: {
+      dashboard: 'لوحة القيادة', course: 'الدورات', exam: 'امتحان', reference: 'المراجع', game: 'لعبة', leaderboard: 'التصنيف', community: 'المجتمع', notebook: 'مفكرة', flashcards: 'بطاقات', chat: 'المعلم', analyzer: 'المحلل', search: 'بحث', download: 'تنزيل', profile: 'الملف الشخصي', logout: 'خروج', theme: 'سمة', nativeLang: 'اللغة', subscription: 'اشتراك', feedback: 'ملاحظات', version: 'إصدار', dailyProgress: 'التقدم اليومي', upgrade: 'ترقية'
+    },
+    auth: { ...en.auth, getStarted: 'يبدأ', signIn: 'تسجيل الدخول', signUp: 'اشتراك', welcomeBack: 'مرحبًا بعودتك', verifyBtn: 'تحقق وتابع', emailLabel: 'البريد الإلكتروني', phoneLabel: 'رقم الهاتف' },
+    dashboard: { ...en.dashboard, hello: 'مرحباً', subtitle: 'جاهز لتعلم بايثون؟', dailyXp: 'نقاط اليوم', clockIn: 'تسجيل', dailyActions: 'إجراءات يومية', missions: 'المهام', collect: 'جمع', collected: 'تم الجمع', missionTitles: { m_d1: 'تسجيل دخول يومي', m_d2: 'إكمال درس صغير', m_d3: 'هزيمة وحش الأخطاء', m_d4: 'كتابة ملاحظة', m_w1: 'ماراثون الكود', m_w2: 'نتيجة كاملة', m_w3: 'مكافأة الدعوة', m_w4: 'تحليل 5 أكواد', m_m1: 'إتقان وحدة', m_m2: 'كسب 1000 نقطة', m_y1: 'الوصول لمرتبة خبير', m_y2: '365 يوم متتالي' }, features: { ...en.dashboard.features, course: { title: 'دورة تفاعلية', desc: 'دروس متحركة خطوة بخطوة.' }, reference: { title: 'كتاب مرجعي', desc: 'إتقان الأساسيات.' }, game: { title: 'ألعاب بايثون', desc: 'العب واربح نقاط.' } } },
+    course: { 
+        ...en.course, title: 'رحلة بايثون', start: 'ابدأ الدرس', locked: 'مغلق', completed: 'مكتمل', nextLesson: 'الدرس التالي', 
+        moduleTitles: { b1: 'مبتدئ: الخطوات الأولى', b1_desc: 'أكوادك الأولى.', b2: 'مبتدئ: المتغيرات', b2_desc: 'تخزين البيانات.', b3: 'مبتدئ: المنطق', b3_desc: 'التفكير الحاسوبي.', b4: 'مبتدئ: الحلقات', b4_desc: 'تكرار العمليات.', i1: 'متدرب: هياكل البيانات', i1_desc: 'تنظيم البيانات.', i2: 'متدرب: الدوال', i2_desc: 'أكواد قابلة لإعادة الاستخدام.', i3: 'متدرب: الملفات', i3_desc: 'قراءة الملفات.', p1: 'خبير: OOP', p1_desc: 'البرمجة كائنية التوجه.', p2: 'خبير: متقدم', p2_desc: 'ميزات متقدمة.' },
+        lessons: { install: 'تثبيت بايثون', hello: 'أهلا بالعالم', print: 'دالة الطباعة', comments: 'التعليقات', math: 'الرياضيات', var_what: 'ما هو المتغير؟', strings: 'النصوص', ints: 'الأعداد الصحيحة', floats: 'الأعداد العشرية', bools: 'القيم المنطقية', convert: 'تحويل النوع', input: 'الإدخال', lists: 'القوائم', funcs: 'الدوال', classes: 'الفئات والكائنات' }
+    },
+    exam: { ...en.exam, title: 'قاعة الامتحان', desc: 'التحضير للشهادات مع الامتحانات.', mock: 'امتحان تجريبي', practice: 'ممارسة', start: 'بدء', score: 'النتيجة', passed: 'ناجح', failed: 'فشل', quit: 'خروج' },
+    game: { ...en.game, title: 'ألعاب', start: 'بدء اللعبة', gameOver: 'انتهت اللعبة', score: 'النتيجة', playAgain: 'العب مرة أخرى', modes: { trivia: { title: 'مسابقة', desc: 'معلومات عامة.' }, bug: { title: 'صائد الأخطاء', desc: 'ابحث عن الخطأ.' }, sprint: { title: 'سباق', desc: 'أسئلة سريعة.' } }, levels: { beginner: 'مبتدئ', intermediate: 'متوسط', professional: 'محترف' } },
+    notebook: { ...en.notebook, title: 'ملاحظاتي', sharedTitle: 'ملاحظات مشتركة', categories: { Study: 'دراسة', Work: 'عمل', Daily: 'يومي', Info: 'معلومات' } },
+    profile: { ...en.profile, title: 'الإعدادات', save: 'حفظ', referral: 'دعوة صديق', referralDesc: 'ادع صديقًا واحصل على 100 نقطة!', copyReferral: 'نسخ الرابط', webLink: 'رابط الويب', appPrefs: 'تفضيلات التطبيق', locationDetect: 'الموقع (عبر IP)', genderOpts: { male: 'ذكر', female: 'أنثى', other: 'آخر', prefer: 'غير محدد' } },
+    community: { ...en.community, title: 'مجموعات الدراسة', create: 'إنشاء مجموعة', join: 'انضمام', classroom: { ...en.community.classroom, translate: 'ترجمة', original: 'أصلي' } },
+    subscription: { ...en.subscription, title: 'اشتراك مميز', popular: 'الأكثر شيوعا', trial: 'تجديد مجاني لمدة 7 أيام', redeem: { ...en.subscription.redeem, title: 'استبدال النقاط', balance: 'رصيدك', btn: 'استبدال' } },
+    reference: { ...en.reference, basics: 'جدول المحتويات', sections: { core: 'المنهج الأساسي', practical: 'تطبيقات عملية', novice: 'مبتدئ', apprentice: 'متدرب', grandmaster: 'خبير', daily: 'يومي', school: 'مدرسة', work: 'عمل', code: 'كود' }, topics: { variables: 'متغيرات', datatypes: 'أنواع البيانات', lists: 'قوائم', loops: 'حلقات', functions: 'دوال', conditionals: 'شروط', dictionaries: 'قواميس', scope: 'نطاق', sets: 'مجموعات', files: 'ملفات', errors: 'أخطاء', modules: 'وحدات', oop: 'كائنات', decorators: 'ديكورات', generators: 'مولدات', context: 'سياق', concurrency: 'تزامن', metaprog: 'ميتا', patterns: 'أنماط', chores: 'أعمال منزلية', files_org: 'تنظيم ملفات', emails: 'بريد', math: 'رياضيات', plotting: 'رسم بياني', flashmaker: 'بطاقات', excel: 'إكسل', scraping: 'كشط', pdf: 'بي دي إف', oneliners: 'سطر واحد', regex: 'ريجيكس', algos: 'خوارزميات' }, desc: { variables: 'تخزين البيانات', datatypes: 'نصوص، أرقام', lists: 'مجموعات', loops: 'تكرار', functions: 'كتل كود', conditionals: 'منطق', dictionaries: 'مفتاح-قيمة' } },
+    search: { ...en.search, title: 'قاموس الكود', desc: 'ابحث عن أي كلمة.', placeholder: 'مثال: print...', button: 'بحث', syntax: 'بناء الجملة', example: 'مثال' },
+    flashcards: { ...en.flashcards, newDeck: 'مجموعة جديدة', generate: 'توليد', flip: 'قلب', syntax: 'بناء الجملة' },
+    leaderboard: { ...en.leaderboard, title: 'التصنيف العالمي', regions: { Global: 'عالمي', Asia: 'آسيا', Europe: 'أوروبا', Americas: 'أمريكا', Local: 'محلي' } },
+    download: { ...en.download, title: 'خذ PyFlow معك', desc: 'مزامنة على جميع الأجهزة', iosDesc: 'iPhone & iPad', androidDesc: 'الهاتف والجهاز اللوحي', desktopDesc: 'Windows, macOS, Linux', webDesc: 'المتصفح' }
 };
 
 export const translations: Record<Language, any> = {
   'English': en,
-  'Chinese (Simplified)': {
-    ...en,
-    nav: {
-      dashboard: '仪表板', course: '互动课程', exam: '考试模拟', reference: '参考书', game: '街机模式', leaderboard: '排行榜', community: '学习小组', notebook: '笔记本', flashcards: '概念卡片', chat: 'Py-老师', analyzer: '代码解释器', search: '代码词典', download: '下载应用', profile: '个人资料', logout: '登出', theme: '主题', nativeLang: '母语', subscription: '高级订阅', feedback: '反馈', version: '版本'
-    },
-    subscription: { ...en.subscription, title: '解锁高级版', trial: '7天免费试用中', redeem: { ...en.subscription.redeem, title: '积分兑换', desc: '用您的XP兑换免费会员', btn: '兑换', insufficient: '积分不足' } },
-    notebook: {
-        ...en.notebook, title: '我的笔记', sharedTitle: '共享笔记', myNotes: '我的笔记', friendsNotes: '朋友和小组', sharedBy: '共享者'
-    },
-    community: {
-        ...en.community, classroom: { ...en.community.classroom, translate: '翻译', original: '原文' }
-    },
-    download: {
-        ...en.download, launchWeb: '打开网站'
-    },
-    profile: {
-        ...en.profile, referral: '推荐并赚取', referralDesc: '分享链接。当您的朋友达到 1000 XP 时，你们每人获得 100 XP！', copyReferral: '复制推荐链接', actions: '账户操作'
-    }
-  },
-  'Malay': {
-    ...en,
-    nav: {
-      dashboard: 'Papan Pemuka', course: 'Kursus', exam: 'Peperiksaan', reference: 'Buku Rujukan', game: 'Arked', leaderboard: 'Ranking', community: 'Kumpulan Belajar', notebook: 'Buku Nota', flashcards: 'Kad Konsep', chat: 'Py-Cikgu', analyzer: 'Penerang Kod', search: 'Kamus Kod', download: 'Muat Turun', profile: 'Profil', logout: 'Log Keluar', theme: 'Tema', nativeLang: 'Bahasa Ibunda', subscription: 'Langganan', feedback: 'Maklum Balas', version: 'Versi'
-    },
-    notebook: {
-        ...en.notebook, title: 'Nota Saya', sharedTitle: 'Nota Dikongsi', myNotes: 'Nota Saya', friendsNotes: 'Kawan & Kumpulan', sharedBy: 'Dikongsi oleh'
-    },
-    community: {
-        ...en.community, classroom: { ...en.community.classroom, translate: 'Terjemah', original: 'Asal' }
-    },
-    download: {
-        ...en.download, launchWeb: 'Buka Laman Web'
-    },
-    profile: {
-        ...en.profile, referral: 'Rujuk & Peroleh', referralDesc: 'Kongsi pautan. Apabila rakan mencapai 1000 XP, anda berdua dapat 100 XP!', copyReferral: 'Salin Pautan Rujukan', actions: 'Tindakan Akaun'
-    }
-  },
-  'Japanese': en,
-  'Korean': en,
-  'Indonesian': en,
-  'Thai': en,
-  'Vietnamese': en,
-  'Myanmar': en,
-  'Arabic': en
+  'Chinese (Simplified)': cn,
+  'Malay': ms,
+  'Japanese': jp,
+  'Korean': kr,
+  'Indonesian': id,
+  'Thai': th,
+  'Vietnamese': vn,
+  'Myanmar': mm,
+  'Arabic': ar
 };
-
-// Helper to fill missing translations with English for safety
-Object.keys(translations).forEach((lang) => {
-    if (lang === 'English') return;
-    const l = lang as Language;
-    const features = ['dashboard', 'flashcards', 'game', 'notebook', 'chat', 'analyzer', 'search', 'reference', 'profile', 'leaderboard', 'community', 'download', 'auth', 'course', 'exam', 'subscription', 'feedback'];
-    features.forEach(f => {
-        if (!translations[l][f]) translations[l][f] = en[f as keyof typeof en];
-    });
-});

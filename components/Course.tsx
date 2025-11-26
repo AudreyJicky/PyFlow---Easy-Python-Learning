@@ -13,43 +13,45 @@ interface CourseProps {
 const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
     const t = translations[language].course;
     
-    // --- Detailed Syllabus Structure ---
-    const initialModules: CourseModule[] = [
+    // --- Detailed Syllabus Structure (Dynamically Mapped) ---
+    // We map over a static structure but pull TITLES and DESCRIPTIONS from the current language translation object.
+    
+    const getModules = (): CourseModule[] => [
         // --- LEVEL 1: BEGINNER (NOVICE) ---
         {
             id: 'b1',
-            title: 'Novice: First Steps',
-            description: 'Your very first code lines. Zero experience needed.',
+            title: t.moduleTitles?.b1 || 'Novice: First Steps',
+            description: t.moduleTitles?.b1_desc || 'Your very first code lines.',
             level: 'Beginner',
             isLocked: false,
             lessons: [
-                { id: 'b1-1', title: 'Installing Python', isCompleted: true },
-                { id: 'b1-2', title: 'Hello World', isCompleted: true },
-                { id: 'b1-3', title: 'The Print Function', isCompleted: false },
-                { id: 'b1-4', title: 'Comments & Notes', isCompleted: false },
-                { id: 'b1-5', title: 'Basic Math (+ - * /)', isCompleted: false },
+                { id: 'b1-1', title: t.lessons?.install || 'Installing Python', isCompleted: true },
+                { id: 'b1-2', title: t.lessons?.hello || 'Hello World', isCompleted: true },
+                { id: 'b1-3', title: t.lessons?.print || 'The Print Function', isCompleted: false },
+                { id: 'b1-4', title: t.lessons?.comments || 'Comments & Notes', isCompleted: false },
+                { id: 'b1-5', title: t.lessons?.math || 'Basic Math (+ - * /)', isCompleted: false },
             ]
         },
         {
             id: 'b2',
-            title: 'Novice: Variables & Data',
-            description: 'How to store information in memory.',
+            title: t.moduleTitles?.b2 || 'Novice: Variables & Data',
+            description: t.moduleTitles?.b2_desc || 'How to store information in memory.',
             level: 'Beginner',
             isLocked: true,
             lessons: [
-                { id: 'b2-1', title: 'What is a Variable?', isCompleted: false },
-                { id: 'b2-2', title: 'Strings (Text)', isCompleted: false },
-                { id: 'b2-3', title: 'Integers (Whole Numbers)', isCompleted: false },
-                { id: 'b2-4', title: 'Floats (Decimals)', isCompleted: false },
-                { id: 'b2-5', title: 'Booleans (True/False)', isCompleted: false },
-                { id: 'b2-6', title: 'Type Conversion', isCompleted: false },
-                { id: 'b2-7', title: 'User Input', isCompleted: false },
+                { id: 'b2-1', title: t.lessons?.var_what || 'What is a Variable?', isCompleted: false },
+                { id: 'b2-2', title: t.lessons?.strings || 'Strings (Text)', isCompleted: false },
+                { id: 'b2-3', title: t.lessons?.ints || 'Integers (Whole Numbers)', isCompleted: false },
+                { id: 'b2-4', title: t.lessons?.floats || 'Floats (Decimals)', isCompleted: false },
+                { id: 'b2-5', title: t.lessons?.bools || 'Booleans (True/False)', isCompleted: false },
+                { id: 'b2-6', title: t.lessons?.convert || 'Type Conversion', isCompleted: false },
+                { id: 'b2-7', title: t.lessons?.input || 'User Input', isCompleted: false },
             ]
         },
         {
             id: 'b3',
-            title: 'Novice: Making Decisions',
-            description: 'Teaching the computer to think with logic.',
+            title: t.moduleTitles?.b3 || 'Novice: Making Decisions',
+            description: t.moduleTitles?.b3_desc || 'Teaching the computer to think with logic.',
             level: 'Beginner',
             isLocked: true,
             lessons: [
@@ -62,8 +64,8 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         },
         {
             id: 'b4',
-            title: 'Novice: Looping',
-            description: 'Repeating actions automatically.',
+            title: t.moduleTitles?.b4 || 'Novice: Looping',
+            description: t.moduleTitles?.b4_desc || 'Repeating actions automatically.',
             level: 'Beginner',
             isLocked: true,
             lessons: [
@@ -78,12 +80,12 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         // --- LEVEL 2: INTERMEDIATE (APPRENTICE) ---
         {
             id: 'i1',
-            title: 'Apprentice: Data Structures',
-            description: 'Organizing complex data.',
+            title: t.moduleTitles?.i1 || 'Apprentice: Data Structures',
+            description: t.moduleTitles?.i1_desc || 'Organizing complex data.',
             level: 'Intermediate',
             isLocked: true,
             lessons: [
-                { id: 'i1-1', title: 'Intro to Lists', isCompleted: false },
+                { id: 'i1-1', title: t.lessons?.lists || 'Intro to Lists', isCompleted: false },
                 { id: 'i1-2', title: 'List Methods (Append, Pop)', isCompleted: false },
                 { id: 'i1-3', title: 'Slicing Lists', isCompleted: false },
                 { id: 'i1-4', title: 'Tuples (Immutable)', isCompleted: false },
@@ -94,12 +96,12 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         },
         {
             id: 'i2',
-            title: 'Apprentice: Functions',
-            description: 'Creating reusable blocks of code.',
+            title: t.moduleTitles?.i2 || 'Apprentice: Functions',
+            description: t.moduleTitles?.i2_desc || 'Creating reusable blocks of code.',
             level: 'Intermediate',
             isLocked: true,
             lessons: [
-                { id: 'i2-1', title: 'Defining Functions', isCompleted: false },
+                { id: 'i2-1', title: t.lessons?.funcs || 'Defining Functions', isCompleted: false },
                 { id: 'i2-2', title: 'Parameters & Arguments', isCompleted: false },
                 { id: 'i2-3', title: 'Return Values', isCompleted: false },
                 { id: 'i2-4', title: 'Default Arguments', isCompleted: false },
@@ -109,8 +111,8 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         },
         {
             id: 'i3',
-            title: 'Apprentice: File & Error Handling',
-            description: 'Reading files and fixing crashes.',
+            title: t.moduleTitles?.i3 || 'Apprentice: File & Error Handling',
+            description: t.moduleTitles?.i3_desc || 'Reading files and fixing crashes.',
             level: 'Intermediate',
             isLocked: true,
             lessons: [
@@ -125,12 +127,12 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         // --- LEVEL 3: PROFESSIONAL (GRANDMASTER) ---
         {
             id: 'p1',
-            title: 'Grandmaster: OOP',
-            description: 'Object Oriented Programming mastery.',
+            title: t.moduleTitles?.p1 || 'Grandmaster: OOP',
+            description: t.moduleTitles?.p1_desc || 'Object Oriented Programming mastery.',
             level: 'Professional',
             isLocked: true,
             lessons: [
-                { id: 'p1-1', title: 'Classes & Objects', isCompleted: false },
+                { id: 'p1-1', title: t.lessons?.classes || 'Classes & Objects', isCompleted: false },
                 { id: 'p1-2', title: 'The __init__ method', isCompleted: false },
                 { id: 'p1-3', title: 'Instance vs Class Variables', isCompleted: false },
                 { id: 'p1-4', title: 'Inheritance', isCompleted: false },
@@ -140,8 +142,8 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         },
         {
             id: 'p2',
-            title: 'Grandmaster: Advanced Features',
-            description: 'Pythonic ways to write code.',
+            title: t.moduleTitles?.p2 || 'Grandmaster: Advanced Features',
+            description: t.moduleTitles?.p2_desc || 'Pythonic ways to write code.',
             level: 'Professional',
             isLocked: true,
             lessons: [
@@ -155,7 +157,7 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         }
     ];
 
-    const [modules, setModules] = useState<CourseModule[]>(initialModules);
+    const [modules, setModules] = useState<CourseModule[]>(getModules());
     const [currentLesson, setCurrentLesson] = useState<LessonContent | null>(null);
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState<'MAP' | 'LESSON'>('MAP');
@@ -164,6 +166,11 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
     const [visualStep, setVisualStep] = useState(0);
     const [isQuizMode, setIsQuizMode] = useState(false);
     const [lessonScore, setLessonScore] = useState(0);
+
+    // Update modules when language changes
+    React.useEffect(() => {
+        setModules(getModules());
+    }, [language]);
 
     const handleStartLesson = async (moduleId: string, lessonId: string, title: string) => {
         setLoading(true);
@@ -323,7 +330,7 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <button onClick={() => setView('MAP')} className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
-                    <ArrowLeft className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> Back to Map
+                    <ArrowLeft className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.title}
                 </button>
                 <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden sm:block">Lesson Progress</span>

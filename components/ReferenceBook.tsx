@@ -26,99 +26,99 @@ const ReferenceBook: React.FC<ReferenceBookProps> = ({ language }) => {
     
     const t = translations[language].reference;
 
-    // Expanded Topics List
+    // Expanded Topics List with Dynamic Translations
     const SECTIONS: TopicSection[] = [
         {
             id: 'novice',
-            title: 'Novice (Beginner)',
+            title: t.sections?.novice || 'Novice (Beginner)',
             level: 'Beginner',
             icon: <Star className="w-5 h-5" />,
             color: 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20',
             topics: [
-                { id: '1', title: t.topics.variables || 'Variables', emoji: '📦', description: t.desc.variables || 'Storing data' },
-                { id: '2', title: t.topics.datatypes || 'Data Types', emoji: '🔢', description: t.desc.datatypes || 'Strings, Ints' },
-                { id: '3', title: t.topics.lists || 'Lists', emoji: '📜', description: t.desc.lists || 'Collections' },
-                { id: '4', title: t.topics.loops || 'Loops', emoji: '🔄', description: t.desc.loops || 'Repetition' },
-                { id: '5', title: t.topics.conditionals || 'Conditionals', emoji: '🔀', description: t.desc.conditionals || 'Logic' },
+                { id: '1', title: t.topics?.variables || 'Variables', emoji: '📦', description: t.desc?.variables || 'Storing data' },
+                { id: '2', title: t.topics?.datatypes || 'Data Types', emoji: '🔢', description: t.desc?.datatypes || 'Strings, Ints' },
+                { id: '3', title: t.topics?.lists || 'Lists', emoji: '📜', description: t.desc?.lists || 'Collections' },
+                { id: '4', title: t.topics?.loops || 'Loops', emoji: '🔄', description: t.desc?.loops || 'Repetition' },
+                { id: '5', title: t.topics?.conditionals || 'Conditionals', emoji: '🔀', description: t.desc?.conditionals || 'Logic' },
             ]
         },
         {
             id: 'apprentice',
-            title: 'Apprentice (Intermediate)',
+            title: t.sections?.apprentice || 'Apprentice (Intermediate)',
             level: 'Intermediate',
             icon: <Shield className="w-5 h-5" />,
             color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
             topics: [
-                { id: '6', title: 'Functions & Scope', emoji: '⚡', description: 'Advanced arguments, Lambda' },
-                { id: '7', title: 'Dictionaries & Sets', emoji: '📖', description: 'Hash maps and unique sets' },
-                { id: '8', title: 'File Handling', emoji: '📂', description: 'Reading/Writing files' },
-                { id: '9', title: 'Error Handling', emoji: '⚠️', description: 'Try, Except, Finally' },
-                { id: '10', title: 'Modules & Pip', emoji: '📦', description: 'Importing libraries' },
-                { id: '11', title: 'OOP Basics', emoji: '🏗️', description: 'Classes and Objects' },
+                { id: '6', title: t.topics?.scope || 'Functions & Scope', emoji: '⚡', description: 'Advanced arguments, Lambda' },
+                { id: '7', title: t.topics?.sets || 'Dictionaries & Sets', emoji: '📖', description: 'Hash maps and unique sets' },
+                { id: '8', title: t.topics?.files || 'File Handling', emoji: '📂', description: 'Reading/Writing files' },
+                { id: '9', title: t.topics?.errors || 'Error Handling', emoji: '⚠️', description: 'Try, Except, Finally' },
+                { id: '10', title: t.topics?.modules || 'Modules & Pip', emoji: '📦', description: 'Importing libraries' },
+                { id: '11', title: t.topics?.oop || 'OOP Basics', emoji: '🏗️', description: 'Classes and Objects' },
             ]
         },
         {
             id: 'grandmaster',
-            title: 'Grandmaster (Professional)',
+            title: t.sections?.grandmaster || 'Grandmaster (Professional)',
             level: 'Professional',
             icon: <Crown className="w-5 h-5" />,
             color: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20',
             topics: [
-                { id: '12', title: 'Decorators', emoji: '🎀', description: 'Modifying functions' },
-                { id: '13', title: 'Generators', emoji: '🏭', description: 'Yield and memory efficiency' },
-                { id: '14', title: 'Context Managers', emoji: '🚪', description: 'With statement deep dive' },
-                { id: '15', title: 'Concurrency', emoji: '⚡', description: 'Asyncio, Threading' },
-                { id: '16', title: 'Metaprogramming', emoji: '🔮', description: 'Code that writes code' },
-                { id: '17', title: 'Design Patterns', emoji: '📐', description: 'Singleton, Factory, etc.' },
+                { id: '12', title: t.topics?.decorators || 'Decorators', emoji: '🎀', description: 'Modifying functions' },
+                { id: '13', title: t.topics?.generators || 'Generators', emoji: '🏭', description: 'Yield and memory efficiency' },
+                { id: '14', title: t.topics?.context || 'Context Managers', emoji: '🚪', description: 'With statement deep dive' },
+                { id: '15', title: t.topics?.concurrency || 'Concurrency', emoji: '⚡', description: 'Asyncio, Threading' },
+                { id: '16', title: t.topics?.metaprog || 'Metaprogramming', emoji: '🔮', description: 'Code that writes code' },
+                { id: '17', title: t.topics?.patterns || 'Design Patterns', emoji: '📐', description: 'Singleton, Factory, etc.' },
             ]
         },
         // --- NEW PRACTICAL SECTIONS ---
         {
             id: 'daily',
-            title: 'Daily Life',
+            title: t.sections?.daily || 'Daily Life',
             level: 'Practical',
             icon: <Coffee className="w-5 h-5" />,
             color: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20',
             topics: [
-                { id: 'd1', title: 'Automating Chores', emoji: '🤖', description: 'Scripts for daily tasks' },
-                { id: 'd2', title: 'Organizing Files', emoji: '🗂️', description: 'Cleanup your downloads folder' },
-                { id: 'd3', title: 'Sending Emails', emoji: '📧', description: 'SMTP automation' },
+                { id: 'd1', title: t.topics?.chores || 'Automating Chores', emoji: '🤖', description: 'Scripts for daily tasks' },
+                { id: 'd2', title: t.topics?.files_org || 'Organizing Files', emoji: '🗂️', description: 'Cleanup your downloads folder' },
+                { id: 'd3', title: t.topics?.emails || 'Sending Emails', emoji: '📧', description: 'SMTP automation' },
             ]
         },
         {
             id: 'school',
-            title: 'School Helper',
+            title: t.sections?.school || 'School Helper',
             level: 'Practical',
             icon: <GraduationCap className="w-5 h-5" />,
             color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20',
             topics: [
-                { id: 's1', title: 'Math Solver', emoji: '➕', description: 'Calculus & Algebra with SymPy' },
-                { id: 's2', title: 'Plotting Graphs', emoji: '📊', description: 'Matplotlib basics' },
-                { id: 's3', title: 'Flashcard Maker', emoji: '🃏', description: 'Study tools with Pandas' },
+                { id: 's1', title: t.topics?.math || 'Math Solver', emoji: '➕', description: 'Calculus & Algebra with SymPy' },
+                { id: 's2', title: t.topics?.plotting || 'Plotting Graphs', emoji: '📊', description: 'Matplotlib basics' },
+                { id: 's3', title: t.topics?.flashmaker || 'Flashcard Maker', emoji: '🃏', description: 'Study tools with Pandas' },
             ]
         },
         {
             id: 'work',
-            title: 'Work & Office',
+            title: t.sections?.work || 'Work & Office',
             level: 'Practical',
             icon: <Briefcase className="w-5 h-5" />,
             color: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20',
             topics: [
-                { id: 'w1', title: 'Excel Automation', emoji: '📉', description: 'OpenPyXL & Pandas' },
-                { id: 'w2', title: 'Web Scraping', emoji: '🕷️', description: 'BeautifulSoup & Selenium' },
-                { id: 'w3', title: 'PDF Manipulation', emoji: '📄', description: 'Merging & splitting PDFs' },
+                { id: 'w1', title: t.topics?.excel || 'Excel Automation', emoji: '📉', description: 'OpenPyXL & Pandas' },
+                { id: 'w2', title: t.topics?.scraping || 'Web Scraping', emoji: '🕷️', description: 'BeautifulSoup & Selenium' },
+                { id: 'w3', title: t.topics?.pdf || 'PDF Manipulation', emoji: '📄', description: 'Merging & splitting PDFs' },
             ]
         },
         {
             id: 'code',
-            title: 'Code Bank',
+            title: t.sections?.code || 'Code Bank',
             level: 'Practical',
             icon: <Code className="w-5 h-5" />,
             color: 'text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-900/20',
             topics: [
-                { id: 'c1', title: 'One-Liners', emoji: '⚡', description: 'Powerful single lines' },
-                { id: 'c2', title: 'Regex Cheat Sheet', emoji: '🔍', description: 'Pattern matching' },
-                { id: 'c3', title: 'Algorithm Snippets', emoji: '🧠', description: 'Sort, Search, Graph' },
+                { id: 'c1', title: t.topics?.oneliners || 'One-Liners', emoji: '⚡', description: 'Powerful single lines' },
+                { id: 'c2', title: t.topics?.regex || 'Regex Cheat Sheet', emoji: '🔍', description: 'Pattern matching' },
+                { id: 'c3', title: t.topics?.algos || 'Algorithm Snippets', emoji: '🧠', description: 'Sort, Search, Graph' },
             ]
         }
     ];

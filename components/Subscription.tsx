@@ -54,7 +54,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ user, language, onSubscribe
                     >
                         {plan.popular && (
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
-                                Most Popular
+                                {t.popular}
                             </div>
                         )}
                         <div className="bg-slate-50 dark:bg-slate-700/50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -96,7 +96,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ user, language, onSubscribe
                             <p className="text-indigo-200">{t.redeem.desc}</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur px-6 py-3 rounded-xl border border-white/20">
-                            <span className="text-sm text-indigo-300 uppercase font-bold tracking-wider">Your Balance</span>
+                            <span className="text-sm text-indigo-300 uppercase font-bold tracking-wider">{t.redeem.balance}</span>
                             <div className="text-3xl font-mono font-bold text-yellow-400">{user.xp.toLocaleString()} XP</div>
                         </div>
                     </div>
