@@ -25,6 +25,7 @@ export interface UserProfile {
   gender?: Gender;
   bio?: string;
   joinedDate?: string;
+  country?: string;
 }
 
 export interface Flashcard {

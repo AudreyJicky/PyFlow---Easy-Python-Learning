@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { StudyGroup } from '../types';
+import { StudyGroup, Language } from '../types';
+import { translations } from '../translations';
 import { Users, Search, MessageCircle, Hash, Plus } from 'lucide-react';
 
 const MOCK_GROUPS: StudyGroup[] = [
@@ -12,42 +13,46 @@ const MOCK_GROUPS: StudyGroup[] = [
 ];
 
 const Community: React.FC = () => {
+    // See comment in ProfileSettings re: language access
+    const currentLang = (localStorage.getItem('pyflow-lang') as Language) || 'English';
+    const t = translations[currentLang]?.community || translations['English'].community;
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white">Community Groups</h2>
-                    <p className="text-slate-500 dark:text-slate-400">Join a squad and learn together!</p>
+                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white">{t.title}</h2>
+                    <p className="text-slate-500 dark:text-slate-400">{t.desc}</p>
                 </div>
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium shadow-md flex items-center">
-                    <Plus className="w-5 h-5 mr-2" /> Create Group
+                    <Plus className="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0" /> {t.create}
                 </button>
             </div>
 
             {/* Search Bar */}
             <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5 rtl:right-4 rtl:left-auto" />
                 <input 
                     type="text" 
-                    placeholder="Search for topics, languages, or groups..." 
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+                    placeholder={t.search}
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm rtl:pr-12 rtl:pl-4"
                 />
             </div>
 
             {/* My Groups Section */}
             <div className="mb-8">
                  <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center">
-                    <Users className="w-5 h-5 mr-2 text-blue-500" /> Your Groups
+                    <Users className="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0 text-blue-500" /> {t.yourGroups}
                  </h3>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {MOCK_GROUPS.filter(g => g.isJoined).map(group => (
                         <div key={group.id} className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-5 flex justify-between items-center">
                             <div>
                                 <h4 className="font-bold text-slate-800 dark:text-white">{group.name}</h4>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">{group.members} Members • <span className="text-green-600 dark:text-green-400">12 Online</span></p>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">{group.members} {t.members} • <span className="text-green-600 dark:text-green-400">12 {t.online}</span></p>
                             </div>
                             <button className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700">
-                                Open Chat
+                                {t.openChat}
                             </button>
                         </div>
                     ))}
@@ -55,7 +60,7 @@ const Community: React.FC = () => {
             </div>
 
             {/* Explore Section */}
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Explore Groups</h3>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">{t.explore}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {MOCK_GROUPS.filter(g => !g.isJoined).map(group => (
                     <div key={group.id} className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all flex flex-col h-full">
@@ -64,7 +69,7 @@ const Community: React.FC = () => {
                                 <Hash className="w-6 h-6 text-slate-500 dark:text-slate-400" />
                              </div>
                              <span className="text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-full">
-                                {group.members} members
+                                {group.members} {t.members}
                              </span>
                         </div>
                         
@@ -82,7 +87,7 @@ const Community: React.FC = () => {
                         </div>
 
                         <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">
-                            Join Group
+                            {t.join}
                         </button>
                     </div>
                 ))}

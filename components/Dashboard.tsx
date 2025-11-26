@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { getDailyTip } from '../services/geminiService';
 import { DailyTip, Language, AppView } from '../types';
+import { translations } from '../translations';
 import { Sparkles, Code, ArrowRight, Layers, Terminal, BookOpen, Gamepad2, PenTool } from 'lucide-react';
 
 interface DashboardProps {
@@ -13,6 +14,7 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, xp }) => {
     const [tip, setTip] = useState<DailyTip | null>(null);
     const [loading, setLoading] = useState(true);
+    const t = translations[language];
 
     useEffect(() => {
         const fetchTip = async () => {
@@ -33,12 +35,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, xp }) => {
         <div className="space-y-8">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Hello, Coder! 👋</h2>
-                    <p className="text-slate-500 dark:text-slate-400">Ready to level up your Python skills?</p>
+                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">{t.dashboard.hello}</h2>
+                    <p className="text-slate-500 dark:text-slate-400">{t.dashboard.subtitle}</p>
                 </div>
-                <div className="bg-white dark:bg-slate-800 px-6 py-3 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center space-x-4">
+                <div className="bg-white dark:bg-slate-800 px-6 py-3 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center space-x-4 rtl:space-x-reverse">
                     <div className="text-right">
-                        <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Daily XP</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">{t.dashboard.dailyXp}</div>
                         <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{xp} / 100</div>
                     </div>
                     <div className="h-10 w-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-600 dark:text-yellow-400">
@@ -53,9 +55,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, xp }) => {
                     <Code className="w-48 h-48 text-blue-500" />
                 </div>
                 <div className="p-6 md:p-8 relative z-10">
-                    <div className="flex items-center space-x-2 text-blue-500 dark:text-blue-400 font-semibold text-sm uppercase tracking-wider mb-4">
+                    <div className="flex items-center space-x-2 text-blue-500 dark:text-blue-400 font-semibold text-sm uppercase tracking-wider mb-4 rtl:space-x-reverse">
                         <Sparkles className="w-4 h-4" />
-                        <span>Daily Python Tip</span>
+                        <span>{t.dashboard.dailyTip}</span>
                     </div>
                     
                     {loading ? (
@@ -70,7 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, xp }) => {
                                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                                     {tip.topic}
                                 </h3>
-                                <div className="bg-slate-900 rounded-lg p-4 font-mono text-green-400 text-sm md:text-base overflow-x-auto shadow-inner border border-slate-700">
+                                <div className="bg-slate-900 rounded-lg p-4 font-mono text-green-400 text-sm md:text-base overflow-x-auto shadow-inner border border-slate-700" dir="ltr">
                                     <pre>{tip.codeSnippet}</pre>
                                 </div>
                             </div>
@@ -80,7 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, xp }) => {
                             </div>
                         </div>
                     ) : (
-                        <p className="text-red-500">Failed to load tip.</p>
+                        <p className="text-red-500">{t.dashboard.failedTip}</p>
                     )}
                 </div>
             </div>
@@ -88,53 +90,59 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, xp }) => {
             {/* Feature Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                  <ActionCard 
-                    title="Reference Book"
-                    desc="Master the basics with simple guides."
+                    title={t.dashboard.features.reference.title}
+                    desc={t.dashboard.features.reference.desc}
                     icon={BookOpen}
                     color="amber"
                     onClick={() => onNavigate(AppView.REFERENCE)}
+                    openText={t.dashboard.open}
                  />
                  <ActionCard 
-                    title="Python Arcade"
-                    desc="Play quizzes and earn XP!"
+                    title={t.dashboard.features.game.title}
+                    desc={t.dashboard.features.game.desc}
                     icon={Gamepad2}
                     color="purple"
                     onClick={() => onNavigate(AppView.GAME)}
+                    openText={t.dashboard.open}
                  />
                  <ActionCard 
-                    title="My Notebook"
-                    desc="Save useful code snippets."
+                    title={t.dashboard.features.notebook.title}
+                    desc={t.dashboard.features.notebook.desc}
                     icon={PenTool}
                     color="pink"
                     onClick={() => onNavigate(AppView.NOTEBOOK)}
+                    openText={t.dashboard.open}
                  />
                  <ActionCard 
-                    title="Concept Cards"
-                    desc="Swipe to memorize syntax."
+                    title={t.dashboard.features.flashcards.title}
+                    desc={t.dashboard.features.flashcards.desc}
                     icon={Layers}
                     color="indigo"
                     onClick={() => onNavigate(AppView.FLASHCARDS)}
+                    openText={t.dashboard.open}
                  />
                  <ActionCard 
-                    title="Ask Py-Sensei"
-                    desc="Chat with your AI Tutor."
+                    title={t.dashboard.features.chat.title}
+                    desc={t.dashboard.features.chat.desc}
                     icon={Terminal}
                     color="emerald"
                     onClick={() => onNavigate(AppView.CHAT)}
+                    openText={t.dashboard.open}
                  />
                  <ActionCard 
-                    title="Code Explainer"
-                    desc="Paste code to understand it."
+                    title={t.dashboard.features.analyzer.title}
+                    desc={t.dashboard.features.analyzer.desc}
                     icon={Code}
                     color="cyan"
                     onClick={() => onNavigate(AppView.ANALYZER)}
+                    openText={t.dashboard.open}
                  />
             </div>
         </div>
     );
 };
 
-const ActionCard = ({ title, desc, icon: Icon, color, onClick }: any) => {
+const ActionCard = ({ title, desc, icon: Icon, color, onClick, openText }: any) => {
     const colorClasses: any = {
         amber: 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-800 hover:border-amber-300',
         purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-800 hover:border-purple-300',
@@ -154,8 +162,8 @@ const ActionCard = ({ title, desc, icon: Icon, color, onClick }: any) => {
             </div>
             <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">{title}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{desc}</p>
-            <div className={`mt-auto flex items-center text-sm font-semibold opacity-70 group-hover:opacity-100 transition-opacity dark:text-slate-200`}>
-                Open <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+            <div className={`mt-auto flex items-center text-sm font-semibold opacity-70 group-hover:opacity-100 transition-opacity dark:text-slate-200 rtl:flex-row-reverse`}>
+                {openText} <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform rtl:ml-0 rtl:mr-1 rtl:group-hover:-translate-x-1" />
             </div>
         </button>
     )

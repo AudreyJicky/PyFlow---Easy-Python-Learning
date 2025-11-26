@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Note } from '../types';
+import { translations } from '../translations';
 import { Plus, Trash2, Save, FileText, Tag } from 'lucide-react';
 
 interface NotebookProps {
@@ -16,6 +17,8 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tagInput, setTagInput] = useState('');
+
+    const t = translations[language as keyof typeof translations]?.notebook || translations['English'].notebook;
 
     useEffect(() => {
         const saved = localStorage.getItem('pyflow-notes');
@@ -83,12 +86,12 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
             <div className="w-full md:w-1/3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden transition-colors">
                 <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
                     <h3 className="font-bold text-slate-700 dark:text-slate-200 flex items-center">
-                        <FileText className="w-5 h-5 mr-2 text-blue-500" /> My Notes
+                        <FileText className="w-5 h-5 mr-2 text-blue-500 rtl:ml-2 rtl:mr-0" /> {t.title}
                     </h3>
                     <button 
                         onClick={handleNewNote}
                         className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                        title="New Note"
+                        title={t.newNote}
                     >
                         <Plus className="w-5 h-5" />
                     </button>
@@ -96,7 +99,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                 <div className="flex-1 overflow-y-auto p-3 space-y-2">
                     {notes.length === 0 && (
                         <div className="text-center text-slate-400 dark:text-slate-500 p-8 text-sm">
-                            No notes yet. Click + to add one!
+                            {t.empty}
                         </div>
                     )}
                     {notes.map(note => (
@@ -134,22 +137,22 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                                 <input 
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Note Title..."
+                                    placeholder={t.titlePlaceholder}
                                     className="text-lg font-bold text-slate-800 dark:text-white outline-none w-full bg-transparent placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                 />
                             ) : (
                                 <h2 className="text-xl font-bold text-slate-800 dark:text-white">{selectedNote?.title}</h2>
                             )}
                             
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
                                 {isEditing ? (
                                     <button onClick={handleSave} className="flex items-center text-sm bg-green-500 text-white px-3 py-1.5 rounded-lg hover:bg-green-600">
-                                        <Save className="w-4 h-4 mr-1" /> Save
+                                        <Save className="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0" /> {t.save}
                                     </button>
                                 ) : (
                                     <>
                                         <button onClick={() => { setIsEditing(true); }} className="text-sm text-blue-600 dark:text-blue-400 font-medium px-3 py-1.5 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg">
-                                            Edit
+                                            {t.edit}
                                         </button>
                                         <button onClick={() => selectedNote && handleDelete(selectedNote.id)} className="text-slate-400 hover:text-red-500 p-2">
                                             <Trash2 className="w-5 h-5" />
@@ -161,11 +164,11 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
 
                         {isEditing && (
                             <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center">
-                                <Tag className="w-4 h-4 text-slate-400 mr-2" />
+                                <Tag className="w-4 h-4 text-slate-400 mr-2 rtl:ml-2 rtl:mr-0" />
                                 <input 
                                     value={tagInput}
                                     onChange={(e) => setTagInput(e.target.value)}
-                                    placeholder="Tags (comma separated)..."
+                                    placeholder={t.tagsPlaceholder}
                                     className="bg-transparent text-sm w-full outline-none text-slate-600 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                 />
                             </div>
@@ -176,7 +179,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                                 <textarea 
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
-                                    placeholder="Write your code or notes here..."
+                                    placeholder={t.contentPlaceholder}
                                     className="w-full h-full p-6 outline-none resize-none text-slate-700 dark:text-slate-300 bg-transparent font-mono text-sm leading-relaxed"
                                 />
                             ) : (
@@ -189,7 +192,7 @@ const Notebook: React.FC<NotebookProps> = ({ language }) => {
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600">
                         <FileText className="w-16 h-16 mb-4 opacity-50" />
-                        <p>Select a note or create a new one</p>
+                        <p>{t.selectPrompt}</p>
                     </div>
                 )}
             </div>

@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { LeaderboardEntry, UserProfile } from '../types';
+import { LeaderboardEntry, UserProfile, Language } from '../types';
+import { translations } from '../translations';
 import { Trophy, Medal, Crown } from 'lucide-react';
 
 interface LeaderboardProps {
@@ -17,6 +18,10 @@ const MOCK_LEADERBOARD: LeaderboardEntry[] = [
 ];
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ currentUser }) => {
+    // See comment in ProfileSettings re: language access
+    const currentLang = (localStorage.getItem('pyflow-lang') as Language) || 'English';
+    const t = translations[currentLang]?.leaderboard || translations['English'].leaderboard;
+
     // Inject current user into ranking for demo purposes if not present
     const userEntry: LeaderboardEntry = {
         id: 'user-current',
@@ -40,20 +45,20 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentUser }) => {
     return (
         <div className="max-w-3xl mx-auto">
             <div className="text-center mb-10">
-                <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Global Leaderboard</h2>
-                <p className="text-slate-500 dark:text-slate-400">See how you stack up against other learners!</p>
+                <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">{t.title}</h2>
+                <p className="text-slate-500 dark:text-slate-400">{t.desc}</p>
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
                 <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 flex justify-between items-center text-white">
                      <div className="flex items-center">
-                        <Trophy className="w-8 h-8 mr-3 text-yellow-300" />
+                        <Trophy className="w-8 h-8 mr-3 rtl:ml-3 rtl:mr-0 text-yellow-300" />
                         <div>
-                            <div className="font-bold text-lg">Your Current Rank</div>
-                            <div className="text-purple-200 text-sm">Top 20% of learners</div>
+                            <div className="font-bold text-lg">{t.yourRank}</div>
+                            <div className="text-purple-200 text-sm">{t.topPct}</div>
                         </div>
                      </div>
-                     <div className="text-right">
+                     <div className="text-right rtl:text-left">
                          <div className="text-3xl font-bold">#{userEntry.rank}</div>
                          <div className="text-sm opacity-80">{userEntry.xp} XP</div>
                      </div>
@@ -62,10 +67,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentUser }) => {
                 <div className="divide-y divide-slate-100 dark:divide-slate-700">
                     {displayList.map((entry) => (
                         <div key={entry.id} className="p-4 flex items-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                            <div className="w-12 flex justify-center mr-4">
+                            <div className="w-12 flex justify-center mr-4 rtl:ml-4 rtl:mr-0">
                                 {getRankIcon(entry.rank)}
                             </div>
-                            <img src={entry.avatar} className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 dark:border-slate-600 mr-4" />
+                            <img src={entry.avatar} className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 dark:border-slate-600 mr-4 rtl:ml-4 rtl:mr-0" />
                             <div className="flex-1">
                                 <h4 className="font-bold text-slate-800 dark:text-white">{entry.name}</h4>
                                 <span className="text-xs text-slate-400">Level {Math.floor(entry.xp / 100) + 1}</span>
@@ -77,13 +82,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentUser }) => {
                     ))}
                     {/* Current user sticky at bottom if not in list */}
                     <div className="p-4 flex items-center bg-blue-50 dark:bg-blue-900/20 border-t border-slate-200 dark:border-slate-700">
-                         <div className="w-12 flex justify-center mr-4">
+                         <div className="w-12 flex justify-center mr-4 rtl:ml-4 rtl:mr-0">
                              <span className="font-bold text-slate-500 dark:text-slate-400 w-6 text-center">{userEntry.rank}</span>
                          </div>
-                         <img src={userEntry.avatar} className="w-10 h-10 rounded-full bg-slate-100 border border-blue-200 dark:border-blue-500 mr-4" />
+                         <img src={userEntry.avatar} className="w-10 h-10 rounded-full bg-slate-100 border border-blue-200 dark:border-blue-500 mr-4 rtl:ml-4 rtl:mr-0" />
                          <div className="flex-1">
                              <h4 className="font-bold text-slate-800 dark:text-white flex items-center">
-                                {userEntry.name} <span className="ml-2 text-[10px] bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-200 px-1.5 py-0.5 rounded">YOU</span>
+                                {userEntry.name} <span className="ml-2 rtl:mr-2 rtl:ml-0 text-[10px] bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-200 px-1.5 py-0.5 rounded">YOU</span>
                              </h4>
                              <span className="text-xs text-slate-400">Level {Math.floor(userEntry.xp / 100) + 1}</span>
                          </div>

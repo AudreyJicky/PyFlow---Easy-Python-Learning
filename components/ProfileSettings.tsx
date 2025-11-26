@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
 import { UserProfile, Gender } from '../types';
-import { Save, User, Mail, Calendar, Heart, Camera, Check } from 'lucide-react';
+import { translations } from '../translations';
+import { Save, User, Mail, Calendar, Heart, Camera, Check, MapPin } from 'lucide-react';
+import { Language } from '../types';
 
 interface ProfileSettingsProps {
     user: UserProfile;
@@ -9,6 +11,10 @@ interface ProfileSettingsProps {
 }
 
 const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser }) => {
+    // See comment in ProfileSettings re: language access
+    const currentLang = (localStorage.getItem('pyflow-lang') as Language) || 'English';
+    const t = translations[currentLang]?.profile || translations['English'].profile;
+
     const [name, setName] = useState(user.name);
     const [bio, setBio] = useState(user.bio || '');
     const [birthday, setBirthday] = useState(user.birthday || '');
@@ -30,7 +36,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
 
     return (
         <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-6">Profile Settings</h2>
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-6">{t.title}</h2>
             
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
                 {/* Header / Banner */}
@@ -41,12 +47,17 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
                     <div className="relative -mt-12 mb-6 flex justify-between items-end">
                         <div className="relative">
                             <img src={user.avatar} alt="Profile" className="w-24 h-24 rounded-full border-4 border-white dark:border-slate-800 bg-slate-100" />
-                            <div className="absolute bottom-0 right-0 bg-blue-500 p-1.5 rounded-full border-2 border-white dark:border-slate-800 text-white cursor-pointer hover:bg-blue-600 transition-colors">
+                            <div className="absolute bottom-0 right-0 rtl:left-0 rtl:right-auto bg-blue-500 p-1.5 rounded-full border-2 border-white dark:border-slate-800 text-white cursor-pointer hover:bg-blue-600 transition-colors">
                                 <Camera className="w-4 h-4" />
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Member Since</div>
+                        <div className="text-right rtl:text-left">
+                            {user.country && (
+                                <div className="text-xs text-blue-200 bg-blue-600/90 px-2 py-1 rounded inline-flex items-center mb-1 shadow-sm">
+                                    <MapPin className="w-3 h-3 mr-1" /> {user.country}
+                                </div>
+                            )}
+                            <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">{t.memberSince}</div>
                             <div className="text-sm font-medium text-slate-800 dark:text-white">{user.joinedDate || new Date().getFullYear()}</div>
                         </div>
                     </div>
@@ -55,7 +66,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                    <User className="w-4 h-4 mr-2" /> Full Name
+                                    <User className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.fullName}
                                 </label>
                                 <input
                                     type="text"
@@ -67,7 +78,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
                             
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                    <Mail className="w-4 h-4 mr-2" /> Email (Read-only)
+                                    <Mail className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.email}
                                 </label>
                                 <input
                                     type="email"
@@ -79,7 +90,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                    <Calendar className="w-4 h-4 mr-2" /> Birthday
+                                    <Calendar className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.birthday}
                                 </label>
                                 <input
                                     type="date"
@@ -91,7 +102,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                    Gender
+                                    {t.gender}
                                 </label>
                                 <select
                                     value={gender}
@@ -108,12 +119,12 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
 
                         <div>
                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                <Heart className="w-4 h-4 mr-2" /> Learning Preferences / Bio
+                                <Heart className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.bio}
                             </label>
                             <textarea
                                 value={bio}
                                 onChange={(e) => setBio(e.target.value)}
-                                placeholder="Tell us about your coding goals..."
+                                placeholder={t.bioPlaceholder}
                                 rows={4}
                                 className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
                             />
@@ -121,15 +132,15 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser })
 
                         <div className="pt-4 flex items-center justify-end">
                             {saved && (
-                                <span className="text-green-600 dark:text-green-400 text-sm font-medium mr-4 flex items-center animate-fade-in">
-                                    <Check className="w-4 h-4 mr-1" /> Saved Successfully
+                                <span className="text-green-600 dark:text-green-400 text-sm font-medium mr-4 rtl:ml-4 rtl:mr-0 flex items-center animate-fade-in">
+                                    <Check className="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0" /> {t.saved}
                                 </span>
                             )}
                             <button
                                 type="submit"
                                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center"
                             >
-                                <Save className="w-5 h-5 mr-2" /> Save Changes
+                                <Save className="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0" /> {t.save}
                             </button>
                         </div>
                     </form>

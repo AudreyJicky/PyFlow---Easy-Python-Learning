@@ -20,25 +20,55 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [language, setLanguage] = useState<Language>('English');
   const [loading, setLoading] = useState(true);
+  const [detectedLocation, setDetectedLocation] = useState<string>('');
 
-  // Load state on mount
+  // Auto-detect System Theme and Location on Mount
   useEffect(() => {
-    const loadState = () => {
+    const initializeApp = async () => {
+      // 1. Theme Detection
       const savedUser = localStorage.getItem('pyflow-user');
-      const savedView = localStorage.getItem('pyflow-last-view');
-      const savedLang = localStorage.getItem('pyflow-lang');
-
       if (savedUser) {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
         applyTheme(parsedUser.theme);
+      } else {
+        // No user logged in: Use system preference
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(systemDark ? 'dark' : 'light');
       }
+
+      // 2. View & Language persistence
+      const savedView = localStorage.getItem('pyflow-last-view');
+      const savedLang = localStorage.getItem('pyflow-lang');
       if (savedView) setCurrentView(savedView as AppView);
       if (savedLang) setLanguage(savedLang as Language);
-      
+
+      // 3. Location Detection (IP-based)
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        if (data.country_name) {
+            setDetectedLocation(data.country_name);
+        }
+      } catch (e) {
+        console.warn("Could not detect location automatically.");
+      }
+
       setLoading(false);
     };
-    loadState();
+
+    initializeApp();
+
+    // Listen for system theme changes if no user preference overrides it
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+        if (!localStorage.getItem('pyflow-user')) {
+            applyTheme(e.matches ? 'dark' : 'light');
+        }
+    };
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+
+    return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
   }, []);
 
   const applyTheme = (theme: ThemeMode) => {
@@ -50,16 +80,27 @@ const App: React.FC = () => {
   };
 
   const handleLogin = (newUser: UserProfile) => {
-    setUser(newUser);
-    applyTheme(newUser.theme);
-    localStorage.setItem('pyflow-user', JSON.stringify(newUser));
+    // Merge detected location if user doesn't have one (e.g. new signup)
+    const userWithLocation = {
+        ...newUser,
+        country: newUser.country || detectedLocation
+    };
+    
+    setUser(userWithLocation);
+    // If user has a saved theme preference, apply it. Otherwise, keep current system/state theme.
+    if (newUser.theme) {
+        applyTheme(newUser.theme);
+    }
+    localStorage.setItem('pyflow-user', JSON.stringify(userWithLocation));
   };
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('pyflow-user');
     setCurrentView(AppView.DASHBOARD);
-    applyTheme('light');
+    // Revert to system theme on logout
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(systemDark ? 'dark' : 'light');
   };
 
   const handleViewChange = (view: AppView) => {
@@ -73,11 +114,14 @@ const App: React.FC = () => {
   };
 
   const handleThemeChange = (mode: ThemeMode) => {
-    if (!user) return;
-    const updatedUser = { ...user, theme: mode };
-    setUser(updatedUser);
-    localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+    // Update state immediately for UI responsiveness
     applyTheme(mode);
+    
+    if (user) {
+        const updatedUser = { ...user, theme: mode };
+        setUser(updatedUser);
+        localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+    }
   };
 
   const handleAvatarChange = (avatarUrl: string) => {
@@ -90,6 +134,8 @@ const App: React.FC = () => {
   const handleUpdateUser = (updatedUser: UserProfile) => {
       setUser(updatedUser);
       localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+      // Ensure theme is applied if changed in settings
+      applyTheme(updatedUser.theme);
   };
 
   const handleXpGain = (amount: number) => {
@@ -98,14 +144,20 @@ const App: React.FC = () => {
       const updatedUser = { ...user, xp: newXp };
       setUser(updatedUser);
       localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
-      // Legacy support
       localStorage.setItem('pyflow-xp', newXp.toString());
   };
 
   if (loading) return null;
 
   if (!user) {
-    return <Auth onLogin={handleLogin} />;
+    return (
+        <Auth 
+            onLogin={handleLogin} 
+            language={language} 
+            onLanguageChange={handleLanguageChange}
+            detectedLocation={detectedLocation}
+        />
+    );
   }
 
   const renderContent = () => {
