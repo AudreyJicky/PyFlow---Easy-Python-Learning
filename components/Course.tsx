@@ -1,21 +1,84 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateLessonContent } from '../services/geminiService';
 import { Language, LessonContent, CourseModule, GameLevel } from '../types';
 import { translations } from '../translations';
-import { Play, CheckCircle, Lock, BookOpen, ChevronRight, RotateCcw, Award, ArrowLeft, Loader2, Star, Shield, Crown, Zap } from 'lucide-react';
+import { Play, CheckCircle, Lock, ChevronRight, Award, ArrowLeft, Zap, Star, Shield, Crown, Loader2 } from 'lucide-react';
 
 interface CourseProps {
     language: Language;
     onXpGain: (amount: number) => void;
 }
 
+// --- ROBUST FALLBACK CONTENT (Zero Latency) ---
+// Used if AI is slow (>1.2s) or fails. Ensures user always gets content.
+const FALLBACK_LESSONS: Record<string, LessonContent> = {
+    'b1-2': { // Hello World
+        title: "Hello World",
+        concept: "The classic first program. It prints text to the screen.",
+        code: "print('Hello')\nprint('World')",
+        steps: [
+            { line: 1, description: "The print function outputs 'Hello'.", variables: {}, output: "Hello" },
+            { line: 2, description: "It runs the next line and prints 'World'.", variables: {}, output: "World" }
+        ],
+        quiz: [
+            { question: "What does print() do?", options: ["Saves data", "Shows text", "Stops code"], correctAnswer: "Shows text", explanation: "It displays output to the console." },
+            { question: "Output of print('Hi')?", options: ["Hi", "hi", "Error"], correctAnswer: "Hi", explanation: "It prints exactly what is inside the quotes." }
+        ]
+    },
+    'b2-1': { // Variables
+        title: "Variables",
+        concept: "Variables are like boxes where you store information.",
+        code: "score = 10\nname = 'Alex'\nprint(name)",
+        steps: [
+            { line: 1, description: "Create a box named 'score' with value 10.", variables: { "score": "10" } },
+            { line: 2, description: "Create a box named 'name' with text 'Alex'.", variables: { "score": "10", "name": "'Alex'" } },
+            { line: 3, description: "Look inside 'name' box and print it.", variables: { "score": "10", "name": "'Alex'" }, output: "Alex" }
+        ],
+        quiz: [
+            { question: "Which is a valid variable?", options: ["1st_place", "my_score", "class"], correctAnswer: "my_score", explanation: "Variables can't start with numbers or be keywords." },
+            { question: "What is stored in 'score'?", options: ["Alex", "10", "Nothing"], correctAnswer: "10", explanation: "We assigned 10 to it." }
+        ]
+    },
+    'b4-1': { // Loops
+        title: "Intro to Loops",
+        concept: "Loops let you repeat code multiple times automatically.",
+        code: "for i in range(3):\n    print(i)",
+        steps: [
+            { line: 1, description: "Start loop. i becomes 0.", variables: { "i": "0" } },
+            { line: 2, description: "Print 0.", variables: { "i": "0" }, output: "0" },
+            { line: 1, description: "Loop repeats. i becomes 1.", variables: { "i": "1" } },
+            { line: 2, description: "Print 1.", variables: { "i": "1" }, output: "1" },
+            { line: 1, description: "Loop repeats. i becomes 2.", variables: { "i": "2" } },
+            { line: 2, description: "Print 2.", variables: { "i": "2" }, output: "2" }
+        ],
+        quiz: [
+            { question: "What does range(3) generate?", options: ["1, 2, 3", "0, 1, 2", "0, 1, 2, 3"], correctAnswer: "0, 1, 2", explanation: "Python ranges start at 0 and stop before the end number." },
+            { question: "How many times does it run?", options: ["3 times", "2 times", "4 times"], correctAnswer: "3 times", explanation: "Once for 0, 1, and 2." }
+        ]
+    }
+};
+
+// Helper to generate a dynamic fallback if specific ID is missing
+const getGenericFallback = (title: string): LessonContent => ({
+    title: title,
+    concept: "Overview of this concept. (AI Loaded Offline Mode)",
+    code: "# Example Code\nx = 10\nif x > 5:\n    print('Success')",
+    steps: [
+        { line: 2, description: "Initialize variable x with value 10.", variables: { "x": "10" } },
+        { line: 3, description: "Check if x is greater than 5. (It is!)", variables: { "x": "10" } },
+        { line: 4, description: "Print success message.", variables: { "x": "10" }, output: "Success" }
+    ],
+    quiz: [
+        { question: "What is the value of x?", options: ["5", "10", "0"], correctAnswer: "10", explanation: "Defined in line 2." },
+        { question: "Does the print statement run?", options: ["Yes", "No"], correctAnswer: "Yes", explanation: "Because 10 > 5 is True." }
+    ]
+});
+
 const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
     const t = translations[language].course;
     
     // --- Detailed Syllabus Structure (Dynamically Mapped) ---
-    // We map over a static structure but pull TITLES and DESCRIPTIONS from the current language translation object.
-    
     const getModules = (): CourseModule[] => [
         // --- LEVEL 1: BEGINNER (NOVICE) ---
         {
@@ -157,7 +220,48 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         }
     ];
 
-    const [modules, setModules] = useState<CourseModule[]>(getModules());
+    // Persistence Logic: Load completed lesson IDs
+    const [completedLessonIds, setCompletedLessonIds] = useState<string[]>(() => {
+        try {
+            return JSON.parse(localStorage.getItem('pyflow-completed-lessons') || '[]');
+        } catch {
+            return [];
+        }
+    });
+
+    const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
+
+    // Merge saved progress with module structure and calculate locks
+    const mergeProgress = (mods: CourseModule[], completedIds: string[]): CourseModule[] => {
+        let previousModuleCompleted = true; // First module is always accessible
+
+        return mods.map((m, index) => {
+            // Update completion status for lessons
+            const updatedLessons = m.lessons.map(l => ({
+                ...l,
+                isCompleted: l.isCompleted || completedIds.includes(l.id)
+            }));
+
+            // Check if THIS module is fully complete
+            const isThisModuleComplete = updatedLessons.every(l => l.isCompleted);
+
+            // Unlock logic: 
+            // - First module (index 0) is never locked.
+            // - Subsequent modules are locked if the previous module is NOT complete.
+            const isLocked = index === 0 ? false : !previousModuleCompleted;
+
+            // Prepare tracking for next iteration
+            previousModuleCompleted = isThisModuleComplete;
+
+            return {
+                ...m,
+                isLocked, 
+                lessons: updatedLessons
+            };
+        });
+    };
+
+    const [modules, setModules] = useState<CourseModule[]>(() => mergeProgress(getModules(), completedLessonIds));
     const [currentLesson, setCurrentLesson] = useState<LessonContent | null>(null);
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState<'MAP' | 'LESSON'>('MAP');
@@ -167,24 +271,43 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
     const [isQuizMode, setIsQuizMode] = useState(false);
     const [lessonScore, setLessonScore] = useState(0);
 
-    // Update modules when language changes
-    React.useEffect(() => {
-        setModules(getModules());
-    }, [language]);
+    // Update modules when language or progress changes
+    useEffect(() => {
+        setModules(mergeProgress(getModules(), completedLessonIds));
+    }, [language, completedLessonIds]);
 
     const handleStartLesson = async (moduleId: string, lessonId: string, title: string) => {
         setLoading(true);
+        setCurrentLessonId(lessonId); // Track current lesson ID for saving later
+
+        // Identify fallback content
+        const fallback = FALLBACK_LESSONS[lessonId] || getGenericFallback(title);
+
         try {
-            // Include level context in prompt
-            const content = await generateLessonContent(title, language);
-            setCurrentLesson(content);
-            setView('LESSON');
+            // Race: AI Generation vs 1.2s timeout for INSTANT feel
+            // If AI is slightly slow, we default to fallback immediately to keep user engaged
+            const aiPromise = generateLessonContent(title, language);
+            const timeoutPromise = new Promise<LessonContent>((_, reject) => 
+                setTimeout(() => reject('timeout'), 1200)
+            );
+
+            const content = await Promise.race([aiPromise, timeoutPromise]);
+            
+            if (content && content.steps && content.steps.length > 0) {
+                setCurrentLesson(content);
+            } else {
+                throw new Error("Empty content");
+            }
+        } catch (e) {
+            // If AI is slow or fails, use the robust local fallback immediately
+            // Adapt the fallback title to match the requested lesson title
+            setCurrentLesson({ ...fallback, title: title });
+        } finally {
+            // Reset states for new lesson
             setVisualStep(0);
             setIsQuizMode(false);
             setLessonScore(0);
-        } catch (e) {
-            console.error(e);
-        } finally {
+            setView('LESSON');
             setLoading(false);
         }
     };
@@ -198,14 +321,21 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
         }
     };
 
-    const handleQuizAnswer = (isCorrect: boolean) => {
-        if (isCorrect) setLessonScore(prev => prev + 1);
-    };
-
     const completeLesson = () => {
-        // Mark as complete in state (mock)
-        // In real app, find module and update lesson completion
+        if (currentLessonId) {
+            // 1. Save to LocalStorage IMMEDIATELY
+            const newCompleted = [...completedLessonIds, currentLessonId];
+            const uniqueCompleted = Array.from(new Set(newCompleted)); // Remove duplicates
+            localStorage.setItem('pyflow-completed-lessons', JSON.stringify(uniqueCompleted));
+            
+            // 2. Update State to trigger UI refresh
+            setCompletedLessonIds(uniqueCompleted);
+        }
+
+        // 3. Award XP
         onXpGain(20 + (lessonScore * 10)); // Base XP + Quiz XP
+        
+        // 4. Return to Map
         setView('MAP');
     };
 
@@ -305,8 +435,10 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
                                                 <div className="flex-1 min-w-0">
                                                     <span className="font-medium text-sm truncate block">{lesson.title}</span>
                                                 </div>
-                                                {!module.isLocked && !lesson.isCompleted && (
-                                                    <Play className="w-4 h-4 text-slate-300" />
+                                                {loading && currentLessonId === lesson.id ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                                                ) : (
+                                                    !module.isLocked && !lesson.isCompleted && <Play className="w-4 h-4 text-slate-300" />
                                                 )}
                                             </button>
                                         ))}
@@ -323,7 +455,7 @@ const Course: React.FC<CourseProps> = ({ language, onXpGain }) => {
     // --- LESSON VIEW ---
     if (!currentLesson) return null;
 
-    const currentStepData = currentLesson.steps[visualStep];
+    const currentStepData = currentLesson.steps[visualStep] || currentLesson.steps[0];
 
     return (
         <div className="max-w-6xl mx-auto h-[calc(100vh-140px)] flex flex-col">

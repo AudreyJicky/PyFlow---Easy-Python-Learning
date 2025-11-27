@@ -9,12 +9,57 @@ interface ExamProps {
     language: Language;
 }
 
+// --- INSTANT FALLBACK EXAMS (Zero Latency) ---
+const FALLBACK_EXAMS: Record<string, ExamPaper> = {
+    'Beginner': {
+        id: 'fallback-beg',
+        title: 'Beginner Assessment',
+        year: '2024',
+        level: 'Beginner',
+        durationMinutes: 10,
+        questions: [
+            { question: "What is the output of print(10 + 5)?", options: ["105", "15", "Error", "10 + 5"], correctAnswer: "15", explanation: "Python performs arithmetic addition on integers.", codeBlock: "print(10 + 5)" },
+            { question: "Which symbol starts a comment?", options: ["//", "/*", "#", "<!--"], correctAnswer: "#", explanation: "Hash (#) is used for single line comments." },
+            { question: "How do you create a variable?", options: ["var x = 5", "int x = 5", "x = 5", "declare x = 5"], correctAnswer: "x = 5", explanation: "Python variables are dynamically typed and assigned using =." },
+            { question: "Output of type(3.14)?", options: ["int", "float", "double", "str"], correctAnswer: "float", explanation: "Numbers with decimals are floats." },
+            { question: "Which is a valid boolean?", options: ["true", "True", "TRUE", "yes"], correctAnswer: "True", explanation: "Booleans must be capitalized: True or False." }
+        ]
+    },
+    'Intermediate': {
+        id: 'fallback-int',
+        title: 'Intermediate Certification',
+        year: '2024',
+        level: 'Intermediate',
+        durationMinutes: 15,
+        questions: [
+            { question: "How to add an item to a list?", options: ["list.push(x)", "list.add(x)", "list.append(x)", "list[len] = x"], correctAnswer: "list.append(x)", explanation: "The append() method adds an element to the end." },
+            { question: "What creates a dictionary?", options: "[] {} () <>".split(" "), correctAnswer: "{}", explanation: "Curly braces {} are used for dictionaries (and sets)." },
+            { question: "Correct function syntax?", options: ["func myFunc():", "def myFunc():", "function myFunc():", "def myFunc:"], correctAnswer: "def myFunc():", explanation: "Use 'def', the name, parentheses, and a colon." },
+            { question: "How to catch errors?", options: ["try / catch", "do / catch", "try / except", "attempt / fail"], correctAnswer: "try / except", explanation: "Python uses try/except blocks." },
+            { question: "Output of len([1, 2, 3])?", options: ["2", "3", "4", "0"], correctAnswer: "3", explanation: "The list has 3 elements." }
+        ]
+    },
+    'Professional': {
+        id: 'fallback-pro',
+        title: 'Professional Mock Exam',
+        year: '2024',
+        level: 'Professional',
+        durationMinutes: 20,
+        questions: [
+            { question: "What is a decorator?", options: ["A wrapper function", "A class style", "A variable type", "A module"], correctAnswer: "A wrapper function", explanation: "Decorators modify the behavior of functions or classes." },
+            { question: "What does __init__ do?", options: ["Ends a class", "Initializes an object", "Imports a module", "Deletes data"], correctAnswer: "Initializes an object", explanation: "It is the constructor method in classes." },
+            { question: "Keyword for generator?", options: ["return", "yield", "gen", "make"], correctAnswer: "yield", explanation: "Generators use 'yield' to produce a sequence of values." },
+            { question: "What is the GIL?", options: ["Global Interpreter Lock", "General Input Log", "Graphic Interface Lib", "Global Index List"], correctAnswer: "Global Interpreter Lock", explanation: "A mutex that allows only one thread to control the interpreter." },
+            { question: "Library for dataframes?", options: ["NumPy", "Pandas", "Matplotlib", "Requests"], correctAnswer: "Pandas", explanation: "Pandas is the standard for tabular data manipulation." }
+        ]
+    }
+};
+
 const Exam: React.FC<ExamProps> = ({ language }) => {
     const t = translations[language].exam;
     
-    const [mode, setMode] = useState<'MENU' | 'PAPER' | 'RESULT'>('MENU');
+    const [mode, setMode] = useState<'MENU' | 'PREPARING' | 'PAPER' | 'RESULT'>('MENU');
     const [paper, setPaper] = useState<ExamPaper | null>(null);
-    const [loading, setLoading] = useState(false);
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [timeLeft, setTimeLeft] = useState(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -37,18 +82,36 @@ const Exam: React.FC<ExamProps> = ({ language }) => {
     }, [mode, timeLeft, isSubmitted]);
 
     const startExam = async (type: 'MOCK' | 'PRACTICE', level: GameLevel) => {
-        setLoading(true);
+        setMode('PREPARING');
+        
+        // --- ZERO LATENCY LOGIC ---
+        // 1. Prepare Fallback
+        const fallbackPaper = FALLBACK_EXAMS[level] || FALLBACK_EXAMS['Beginner'];
+        
         try {
-            const newPaper = await generateExamPaper(level, language, type === 'MOCK');
-            setPaper(newPaper);
-            setTimeLeft(newPaper.durationMinutes * 60);
+            // 2. Race Condition: AI vs 2.5s Timeout
+            const aiPromise = generateExamPaper(level, language, type === 'MOCK');
+            const timeoutPromise = new Promise<ExamPaper>((_, reject) => 
+                setTimeout(() => reject('timeout'), 2500)
+            );
+
+            const newPaper = await Promise.race([aiPromise, timeoutPromise]);
+            
+            if (newPaper && newPaper.questions && newPaper.questions.length > 0) {
+                setPaper(newPaper);
+                setTimeLeft(newPaper.durationMinutes * 60);
+            } else {
+                throw new Error("Empty paper");
+            }
+        } catch (e) {
+            console.log("Using Fallback Exam (AI Slow/Error)");
+            // 3. Instant Fallback
+            setPaper(fallbackPaper);
+            setTimeLeft(fallbackPaper.durationMinutes * 60);
+        } finally {
             setAnswers({});
             setIsSubmitted(false);
             setMode('PAPER');
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -99,11 +162,10 @@ const Exam: React.FC<ExamProps> = ({ language }) => {
                                 <button 
                                     key={level}
                                     onClick={() => startExam('MOCK', level)}
-                                    disabled={loading}
-                                    className="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-500 text-slate-700 dark:text-slate-200 font-medium transition-all flex justify-between items-center"
+                                    className="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-500 text-slate-700 dark:text-slate-200 font-medium transition-all flex justify-between items-center group"
                                 >
                                     <span>{level}</span>
-                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowLeft className="w-4 h-4 rotate-180" />}
+                                    <ArrowLeft className="w-4 h-4 rotate-180 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </button>
                             ))}
                         </div>
@@ -122,16 +184,25 @@ const Exam: React.FC<ExamProps> = ({ language }) => {
                                 <button 
                                     key={level}
                                     onClick={() => startExam('PRACTICE', level)}
-                                    disabled={loading}
-                                    className="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-500 text-slate-700 dark:text-slate-200 font-medium transition-all flex justify-between items-center"
+                                    className="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-500 text-slate-700 dark:text-slate-200 font-medium transition-all flex justify-between items-center group"
                                 >
                                     <span>{level}</span>
-                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowLeft className="w-4 h-4 rotate-180" />}
+                                    <ArrowLeft className="w-4 h-4 rotate-180 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </button>
                             ))}
                         </div>
                     </div>
                 </div>
+            </div>
+        );
+    }
+
+    if (mode === 'PREPARING') {
+        return (
+            <div className="max-w-4xl mx-auto h-[60vh] flex flex-col items-center justify-center">
+                <Loader2 className="w-16 h-16 text-blue-600 animate-spin mb-6" />
+                <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Preparing Exam Paper...</h3>
+                <p className="text-slate-500 dark:text-slate-400">Reviewing syllabus and shuffling questions.</p>
             </div>
         );
     }
@@ -142,7 +213,7 @@ const Exam: React.FC<ExamProps> = ({ language }) => {
     const isPass = score >= 70;
 
     return (
-        <div className="max-w-4xl mx-auto pb-20">
+        <div className="max-w-4xl mx-auto pb-20 animate-fade-in">
             {/* Exam Header */}
             <div className="sticky top-0 z-20 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center mb-8">
                 <div>
@@ -163,7 +234,7 @@ const Exam: React.FC<ExamProps> = ({ language }) => {
             </div>
 
             {mode === 'RESULT' && (
-                <div className="mb-10 bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700 text-center animate-fade-in-down">
+                <div className="mb-10 bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700 text-center animate-scale-in">
                     <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 ${isPass ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                         {isPass ? <CheckCircle className="w-10 h-10" /> : <AlertCircle className="w-10 h-10" />}
                     </div>
@@ -172,8 +243,8 @@ const Exam: React.FC<ExamProps> = ({ language }) => {
                         {isPass ? t.passed : t.failed}
                     </p>
                     <div className="flex justify-center gap-4">
-                        <button onClick={() => setMode('MENU')} className="px-6 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold">
-                            Close
+                        <button onClick={() => setMode('MENU')} className="px-6 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                            Return to Hall
                         </button>
                     </div>
                 </div>

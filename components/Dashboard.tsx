@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { getDailyTip } from '../services/geminiService';
 import { DailyTip, Language, AppView, UserProfile } from '../types';
@@ -11,6 +12,41 @@ interface DashboardProps {
     onShowMissions?: () => void;
 }
 
+// --- ZERO LATENCY FALLBACK TIPS ---
+// Instant content if AI is slow or offline
+const FALLBACK_TIPS: DailyTip[] = [
+    {
+        topic: "F-Strings",
+        codeSnippet: "name = 'PyFlow'\nprint(f'I love {name}!')",
+        explanation: "F-strings (Formatted String Literals) are the fastest and most readable way to embed expressions inside strings.",
+        funFact: "Introduced in Python 3.6, they are faster than %-formatting and str.format()."
+    },
+    {
+        topic: "List Comprehension",
+        codeSnippet: "squares = [x**2 for x in range(5)]\n# Result: [0, 1, 4, 9, 16]",
+        explanation: "A concise way to create lists. It replaces multiline for-loops with a single line of readable code.",
+        funFact: "It's often faster than using a for-loop to append items."
+    },
+    {
+        topic: "Enumerate",
+        codeSnippet: "colors = ['red', 'blue']\nfor i, color in enumerate(colors):\n    print(i, color)",
+        explanation: "Use enumerate() to loop over a list and get both the index and the value at the same time.",
+        funFact: "Pythonic code rarely uses 'range(len(list))'."
+    },
+    {
+        topic: "Unpacking",
+        codeSnippet: "a, b = 5, 10\na, b = b, a  # Swap values!",
+        explanation: "You can assign multiple variables at once. This makes swapping values incredibly easy without a temp variable.",
+        funFact: "This works with lists and tuples too!"
+    },
+    {
+        topic: "Zip Function",
+        codeSnippet: "names = ['Anna', 'Bob']\nages = [25, 30]\ncombined = list(zip(names, ages))",
+        explanation: "zip() takes multiple lists and combines them element-by-element into tuples.",
+        funFact: "Like a physical zipper, it joins two sides together."
+    }
+];
+
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, user, onShowMissions }) => {
     const [tip, setTip] = useState<DailyTip | null>(null);
     const [loading, setLoading] = useState(true);
@@ -19,11 +55,23 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, user, onSho
     useEffect(() => {
         const fetchTip = async () => {
             setLoading(true);
+            
+            // 1. Prepare Fallback
+            const randomFallback = FALLBACK_TIPS[Math.floor(Math.random() * FALLBACK_TIPS.length)];
+
             try {
-                const data = await getDailyTip(language);
+                // 2. Race: AI vs 1.0s Timeout for instant feel
+                const aiPromise = getDailyTip(language);
+                const timeoutPromise = new Promise<DailyTip>((_, reject) => 
+                    setTimeout(() => reject('timeout'), 1000)
+                );
+
+                const data = await Promise.race([aiPromise, timeoutPromise]);
                 setTip(data);
             } catch (e) {
-                console.error(e);
+                // 3. Use Fallback immediately if slow or error
+                console.log("Using Zero-Latency Fallback Tip");
+                setTip(randomFallback);
             } finally {
                 setLoading(false);
             }
@@ -60,8 +108,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, user, onSho
 
             <div className="space-y-6">
                 {/* Daily Tip Card */}
-                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
-                    <div className="absolute top-0 right-0 p-4 opacity-5">
+                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 transition-colors group">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
                         <Code className="w-48 h-48 text-blue-500" />
                     </div>
                     <div className="p-6 md:p-8 relative z-10">
@@ -77,17 +125,22 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, user, onSho
                                 <div className="h-16 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
                             </div>
                         ) : tip ? (
-                            <div className="space-y-4">
+                            <div className="space-y-4 animate-fade-in">
                                 <div>
-                                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
                                         {tip.topic}
                                     </h3>
-                                    <div className="bg-slate-900 rounded-lg p-3 font-mono text-green-400 text-sm overflow-x-auto border border-slate-700" dir="ltr">
+                                    <div className="bg-slate-900 rounded-xl p-4 font-mono text-green-400 text-sm overflow-x-auto border border-slate-700 shadow-inner" dir="ltr">
                                         <pre>{tip.codeSnippet}</pre>
                                     </div>
                                 </div>
                                 <div className="text-slate-600 dark:text-slate-300">
-                                    <p className="font-medium text-sm">{tip.explanation}</p>
+                                    <p className="font-medium text-sm leading-relaxed">{tip.explanation}</p>
+                                    {tip.funFact && (
+                                        <p className="text-xs text-blue-500 dark:text-blue-400 mt-2 italic flex items-center">
+                                            <Sparkles className="w-3 h-3 mr-1" /> {tip.funFact}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         ) : (

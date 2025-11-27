@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { StudyGroup, Language } from '../types';
+import React, { useState, useEffect } from 'react';
+import { StudyGroup, GroupMember, Language } from '../types';
 import { translations } from '../translations';
 import { Users, Search, MessageCircle, Hash, Plus, X, Globe } from 'lucide-react';
 import Classroom from './Classroom';
@@ -20,7 +20,26 @@ const Community: React.FC = () => {
 
     const [activeGroup, setActiveGroup] = useState<StudyGroup | null>(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [groups, setGroups] = useState<StudyGroup[]>(MOCK_GROUPS);
+    
+    // Load groups from local storage or fall back to mock data
+    const [groups, setGroups] = useState<StudyGroup[]>(() => {
+        const saved = localStorage.getItem('pyflow-groups');
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch (e) {
+                console.error("Failed to parse groups", e);
+                return MOCK_GROUPS;
+            }
+        }
+        return MOCK_GROUPS;
+    });
+
+    // Helper to update state and persist to localStorage
+    const updateGroups = (newGroups: StudyGroup[]) => {
+        setGroups(newGroups);
+        localStorage.setItem('pyflow-groups', JSON.stringify(newGroups));
+    };
 
     // Form State
     const [newName, setNewName] = useState('');
@@ -39,11 +58,19 @@ const Community: React.FC = () => {
             members: 1,
             isJoined: true
         };
-        setGroups([newGroup, ...groups]);
+        
+        const updatedList = [newGroup, ...groups];
+        updateGroups(updatedList);
+        
         setShowCreateModal(false);
         setActiveGroup(newGroup); // Auto enter
         // Reset
         setNewName(''); setNewDesc(''); setNewTags('');
+    };
+
+    const handleJoinGroup = (groupId: string) => {
+        const updatedGroups = groups.map(g => g.id === groupId ? { ...g, isJoined: true } : g);
+        updateGroups(updatedGroups);
     };
 
     if (activeGroup) {
@@ -176,10 +203,7 @@ const Community: React.FC = () => {
                         </div>
 
                         <button 
-                            onClick={() => {
-                                const updatedGroups = groups.map(g => g.id === group.id ? { ...g, isJoined: true } : g);
-                                setGroups(updatedGroups);
-                            }}
+                            onClick={() => handleJoinGroup(group.id)}
                             className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors"
                         >
                             {t.join}

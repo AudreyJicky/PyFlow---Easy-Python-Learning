@@ -50,6 +50,17 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
         setTimeout(() => setSaved(false), 3000);
     };
 
+    // Instant Save Handler for Toggles/Selects
+    const handleInstantSave = (key: keyof UserProfile, value: any) => {
+        const updatedUser = { ...user, [key]: value };
+        // Update local state to reflect change immediately in UI
+        if (key === 'autoTranslate') setAutoTranslate(value);
+        if (key === 'studyReminder') setStudyReminder(value);
+        
+        // Persist
+        onUpdateUser(updatedUser);
+    };
+
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
         setLinkCopied(true);
@@ -269,7 +280,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                              </div>
                         </div>
 
-                        {/* Learning Preferences */}
+                        {/* Learning Preferences - Instant Save */}
                         <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -279,7 +290,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                                     <input 
                                         type="time" 
                                         value={studyReminder}
-                                        onChange={(e) => setStudyReminder(e.target.value)}
+                                        onChange={(e) => handleInstantSave('studyReminder', e.target.value)}
                                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
                                     />
                                 </div>
@@ -288,7 +299,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                                          <input 
                                             type="checkbox"
                                             checked={autoTranslate}
-                                            onChange={(e) => setAutoTranslate(e.target.checked)}
+                                            onChange={(e) => handleInstantSave('autoTranslate', e.target.checked)}
                                             className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
                                             id="autoTranslate"
                                          />

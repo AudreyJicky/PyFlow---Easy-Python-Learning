@@ -18,6 +18,46 @@ interface TopicSection {
     topics: ReferenceTopic[];
 }
 
+// --- ZERO LATENCY CONTENT DATABASE ---
+const STATIC_CONTENT: Record<string, string> = {
+    // Novice
+    '1': `# Variables\nVariables are containers for storing data values.\n\n### Creating Variables\nPython has no command for declaring a variable. A variable is created the moment you first assign a value to it.\n\n\`\`\`python\nx = 5\ny = "John"\nprint(x)\nprint(y)\n\`\`\`\n\n### Casting\nIf you want to specify the data type of a variable, this can be done with casting.\n\n\`\`\`python\nx = str(3)    # x will be '3'\ny = int(3)    # y will be 3\nz = float(3)  # z will be 3.0\n\`\`\``,
+    '2': `# Data Types\nVariables can store data of different types, and different types can do different things.\n\n### Built-in Data Types\n* **Text Type:** \`str\`\n* **Numeric Types:** \`int\`, \`float\`, \`complex\`\n* **Sequence Types:** \`list\`, \`tuple\`, \`range\`\n* **Mapping Type:** \`dict\`\n* **Set Types:** \`set\`, \`frozenset\`\n* **Boolean Type:** \`bool\`\n\n\`\`\`python\nx = 5        # int\ny = "Hello"  # str\nz = 20.5     # float\n\`\`\``,
+    '3': `# Lists\nLists are used to store multiple items in a single variable.\n\n### Creating a List\nLists are created using square brackets:\n\n\`\`\`python\nthislist = ["apple", "banana", "cherry"]\nprint(thislist)\n\`\`\`\n\n### Access Items\nList items are indexed, the first item has index [0], the second item has index [1] etc.\n\n\`\`\`python\nprint(thislist[1]) # Output: banana\n\`\`\``,
+    '4': `# Loops\nPython has two primitive loop commands: \`while\` loops and \`for\` loops.\n\n### The For Loop\nA for loop is used for iterating over a sequence (that is either a list, a tuple, a dictionary, a set, or a string).\n\n\`\`\`python\nfruits = ["apple", "banana", "cherry"]\nfor x in fruits:\n  print(x)\n\`\`\`\n\n### The Range() Function\nTo loop through a set of code a specified number of times, we can use the range() function,\n\n\`\`\`python\nfor x in range(6):\n  print(x) # Prints 0 to 5\n\`\`\``,
+    '5': `# Conditionals\nPython supports the usual logical conditions from mathematics.\n\n### If Statement\n\n\`\`\`python\na = 33\nb = 200\nif b > a:\n  print("b is greater than a")\n\`\`\`\n\n### Elif\nThe elif keyword is Python's way of saying "if the previous conditions were not true, then try this condition".\n\n\`\`\`python\na = 33\nb = 33\nif b > a:\n  print("b is greater than a")\nelif a == b:\n  print("a and b are equal")\n\`\`\``,
+    
+    // Apprentice
+    '6': `# Functions\nA function is a block of code which only runs when it is called.\n\n### Creating a Function\nIn Python a function is defined using the \`def\` keyword:\n\n\`\`\`python\ndef my_function():\n  print("Hello from a function")\n\`\`\`\n\n### Calling a Function\nTo call a function, use the function name followed by parenthesis:\n\n\`\`\`python\nmy_function()\n\`\`\``,
+    '7': `# Dictionaries\nDictionaries are used to store data values in key:value pairs.\n\n### Creating a Dictionary\nA dictionary is a collection which is ordered*, changeable and does not allow duplicates.\n\n\`\`\`python\nthisdict = {\n  "brand": "Ford",\n  "model": "Mustang",\n  "year": 1964\n}\nprint(thisdict["brand"])\n\`\`\``,
+    '8': `# File Handling\nFile handling is an important part of any web application.\n\n### Open a File\nThe key function for working with files in Python is the \`open()\` function.\n\n\`\`\`python\nf = open("demofile.txt", "r")\nprint(f.read())\n\`\`\`\n\n### Write to File\n\n\`\`\`python\nf = open("demofile.txt", "a")\nf.write("Now the file has more content!")\nf.close()\n\`\`\``,
+    '9': `# Error Handling\nThe \`try\` block lets you test a block of code for errors.\nThe \`except\` block lets you handle the error.\n\n\`\`\`python\ntry:\n  print(x)\nexcept:\n  print("An exception occurred")\n\`\`\`\n\n### Finally\nThe \`finally\` block, if specified, will be executed regardless if the try block raises an error or not.`,
+    '10': `# Modules\nConsider a module to be the same as a code library.\n\n### Create a Module\nTo create a module just save the code you want in a file with the file extension \`.py\`.\n\n### Use a Module\nNow we can use the module we just created, by using the \`import\` statement:\n\n\`\`\`python\nimport mymodule\n\nmymodule.greeting("Jonathan")\n\`\`\``,
+    '11': `# Classes/Objects\nPython is an object oriented programming language.\n\n### Create a Class\nTo create a class, use the keyword \`class\`:\n\n\`\`\`python\nclass MyClass:\n  x = 5\n\np1 = MyClass()\nprint(p1.x)\n\`\`\`\n\n### The __init__() Function\nAll classes have a function called __init__(), which is always executed when the class is being initiated.\n\n\`\`\`python\nclass Person:\n  def __init__(self, name, age):\n    self.name = name\n    self.age = age\n\np1 = Person("John", 36)\nprint(p1.name)\n\`\`\``,
+
+    // Grandmaster
+    '12': `# Decorators\nDecorators are a very powerful and useful tool in Python since it allows programmers to modify the behaviour of a function or class.\n\n\`\`\`python\ndef my_decorator(func):\n    def wrapper():\n        print("Something is happening before the function is called.")\n        func()\n        print("Something is happening after the function is called.")\n    return wrapper\n\n@my_decorator\ndef say_whee():\n    print("Whee!")\n\`\`\``,
+    '13': `# Generators\nGenerators are a simple way of creating iterators.\n\n### Yield\nIt creates a function that yields results one by one, rather than returning them all at once.\n\n\`\`\`python\ndef my_gen():\n    n = 1\n    print('This is printed first')\n    yield n\n\n    n += 1\n    print('This is printed second')\n    yield n\n\nfor item in my_gen():\n    print(item)\n\`\`\``,
+    '14': `# Context Managers\nContext managers allow you to allocate and release resources precisely when you want to.\n\n### The 'with' statement\nThe most common use is opening files:\n\n\`\`\`python\nwith open('some_file', 'w') as opened_file:\n    opened_file.write('Hola!')\n\`\`\`\n\nThis ensures the file is closed automatically, even if an error occurs.`,
+    '15': `# Concurrency\nPython can run tasks in parallel using Threading or Asyncio.\n\n### Asyncio\n\n\`\`\`python\nimport asyncio\n\nasync def main():\n    print('Hello ...')\n    await asyncio.sleep(1)\n    print('... World!')\n\nasyncio.run(main())\n\`\`\``,
+    '16': `# Metaprogramming\nMetaprogramming is code that manipulates code.\n\n### Type()\n\`type()\` can be used to create classes dynamically.\n\n\`\`\`python\nMyClass = type('MyClass', (object,), {'x': 5})\nm = MyClass()\nprint(m.x) # 5\n\`\`\``,
+    '17': `# Design Patterns\nCommon solutions to common problems.\n\n### Singleton\nEnsures a class has only one instance.\n\n\`\`\`python\nclass Singleton:\n    _instance = None\n    def __new__(cls):\n        if cls._instance is None:\n            cls._instance = super().__new__(cls)\n        return cls._instance\n\`\`\``,
+
+    // Practical
+    'd1': `# Automating Chores\nUse Python to do boring tasks.\n\n### Renaming Files\n\n\`\`\`python\nimport os\n\nfolder = "photos/"\nfor count, filename in enumerate(os.listdir(folder)):\n    dst = f"vacation_{str(count)}.jpg"\n    src =f"{folder}/{filename}"\n    dst =f"{folder}/{dst}"\n    os.rename(src, dst)\n\`\`\``,
+    'd2': `# Organizing Files\nMove files based on extension.\n\n\`\`\`python\nimport shutil\nimport os\n\nfor file in os.listdir('.'):\n    if file.endswith('.pdf'):\n        shutil.move(file, 'documents/')\n\`\`\``,
+    'd3': `# Sending Emails\nUse \`smtplib\` to send emails.\n\n\`\`\`python\nimport smtplib\n\ns = smtplib.SMTP('smtp.gmail.com', 587)\ns.starttls()\ns.login("sender@gmail.com", "password")\ns.sendmail("sender", "receiver", "Subject: Hi\\n\\nThis is a test.")\ns.quit()\n\`\`\``,
+    's1': `# Math Solver\nUse \`sympy\` for symbolic mathematics.\n\n\`\`\`python\nfrom sympy import symbols, solve\n\nx = symbols('x')\nexpr = x**2 - 4\nsol = solve(expr)\nprint(sol) # [-2, 2]\n\`\`\``,
+    's2': `# Plotting Graphs\nUse \`matplotlib\` for visualization.\n\n\`\`\`python\nimport matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [10, 20, 25, 30]\n\nplt.plot(x, y)\nplt.show()\n\`\`\``,
+    's3': `# Flashcard Maker\nRead a CSV and quiz yourself.\n\n\`\`\`python\nimport pandas as pd\n\ndf = pd.read_csv('vocab.csv')\nrow = df.sample()\nprint(row['Front'].values[0])\ninput("Press Enter...")\nprint(row['Back'].values[0])\n\`\`\``,
+    'w1': `# Excel Automation\nUse \`openpyxl\` or \`pandas\`.\n\n\`\`\`python\nimport pandas as pd\n\ndf = pd.read_excel('sales.xlsx')\nprint(df.groupby('Region').sum())\n\`\`\``,
+    'w2': `# Web Scraping\nUse \`BeautifulSoup\`.\n\n\`\`\`python\nimport requests\nfrom bs4 import BeautifulSoup\n\npage = requests.get("http://example.com")\nsoup = BeautifulSoup(page.content, 'html.parser')\nprint(soup.title.text)\n\`\`\``,
+    'w3': `# PDF Manipulation\nUse \`PyPDF2\`.\n\n\`\`\`python\nfrom PyPDF2 import PdfReader\n\nreader = PdfReader("book.pdf")\npage = reader.pages[0]\nprint(page.extract_text())\n\`\`\``,
+    'c1': `# One-Liners\nPythonic shortcuts.\n\n**Swap variables:**\n\`a, b = b, a\`\n\n**Reverse list:**\n\`my_list[::-1]\`\n\n**List Comprehension:**\n\`[x**2 for x in range(10)]\`\n`,
+    'c2': `# Regex Cheat Sheet\nRegular Expressions.\n\n* \`\\d\`: Digit\n* \`\\w\`: Word character\n* \`.\`: Any character\n* \`^\`: Start of string\n* \`$\`: End of string\n* \`*\`: Zero or more\n* \`+\`: One or more\n\n\`\`\`python\nimport re\nx = re.findall("\\d+", "There are 2 apples and 5 oranges")\nprint(x) # ['2', '5']\n\`\`\``,
+    'c3': `# Algorithms\n\n### Bubble Sort\n\n\`\`\`python\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1] :\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n\`\`\``
+};
+
 const ReferenceBook: React.FC<ReferenceBookProps> = ({ language }) => {
     const [selectedTopic, setSelectedTopic] = useState<ReferenceTopic | null>(null);
     const [selectedLevel, setSelectedLevel] = useState<string>('Beginner');
@@ -49,8 +89,8 @@ const ReferenceBook: React.FC<ReferenceBookProps> = ({ language }) => {
             icon: <Shield className="w-5 h-5" />,
             color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
             topics: [
-                { id: '6', title: t.topics?.scope || 'Functions & Scope', emoji: '⚡', description: 'Advanced arguments, Lambda' },
-                { id: '7', title: t.topics?.sets || 'Dictionaries & Sets', emoji: '📖', description: 'Hash maps and unique sets' },
+                { id: '6', title: t.topics?.functions || 'Functions & Scope', emoji: '⚡', description: 'Reusable code blocks' },
+                { id: '7', title: t.topics?.dictionaries || 'Dictionaries & Sets', emoji: '📖', description: 'Hash maps and unique sets' },
                 { id: '8', title: t.topics?.files || 'File Handling', emoji: '📂', description: 'Reading/Writing files' },
                 { id: '9', title: t.topics?.errors || 'Error Handling', emoji: '⚠️', description: 'Try, Except, Finally' },
                 { id: '10', title: t.topics?.modules || 'Modules & Pip', emoji: '📦', description: 'Importing libraries' },
@@ -126,6 +166,14 @@ const ReferenceBook: React.FC<ReferenceBookProps> = ({ language }) => {
     const handleTopicClick = async (topic: ReferenceTopic, level: string) => {
         setSelectedTopic(topic);
         setSelectedLevel(level);
+        
+        // ZERO LATENCY CHECK
+        if (STATIC_CONTENT[topic.id]) {
+            setContent(STATIC_CONTENT[topic.id]);
+            return;
+        }
+
+        // Fallback to AI if content is missing (Zero Latency failed)
         setLoading(true);
         setContent('');
         try {
@@ -278,7 +326,7 @@ const ReferenceBook: React.FC<ReferenceBookProps> = ({ language }) => {
                                              // Heuristic for simple code block rendering if the AI didn't format perfectly or for variety
                                             return <div key={idx} className="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-sm my-4 border border-slate-700 shadow-sm overflow-x-auto" dir="ltr">{line}</div>;
                                         }
-                                        return <p key={idx} className="dark:text-white">{line}</p>;
+                                        return <p key={idx} className="text-slate-700 dark:text-white">{line}</p>;
                                     })}
                                 </div>
                             )}

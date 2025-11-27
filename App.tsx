@@ -179,6 +179,7 @@ const App: React.FC = () => {
         applyTheme(newUser.theme);
     }
     localStorage.setItem('pyflow-user', JSON.stringify(userWithLocation));
+    localStorage.setItem('pyflow-xp', userWithLocation.xp.toString()); // Init XP
 
     const savedAccountsJson = localStorage.getItem('pyflow-saved-accounts');
     let savedAccounts: SavedAccount[] = savedAccountsJson ? JSON.parse(savedAccountsJson) : [];
@@ -218,21 +219,21 @@ const App: React.FC = () => {
     applyTheme(mode);
     if (user) {
         const updatedUser = { ...user, theme: mode };
-        setUser(updatedUser);
-        localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+        handleUpdateUser(updatedUser);
     }
   };
 
   const handleAvatarChange = (avatarUrl: string) => {
       if(!user) return;
       const updatedUser = { ...user, avatar: avatarUrl };
-      setUser(updatedUser);
-      localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+      handleUpdateUser(updatedUser);
   }
 
   const handleUpdateUser = (updatedUser: UserProfile) => {
       setUser(updatedUser);
       localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+      // Ensure XP is persisted separately for Auth component recovery and consistency
+      localStorage.setItem('pyflow-xp', updatedUser.xp.toString()); 
       applyTheme(updatedUser.theme);
   };
 
@@ -250,16 +251,13 @@ const App: React.FC = () => {
           alert(`🎉 Milestone Reached!\n\nBecause you used a referral code (${user.referredBy}), you and your friend both get +100 Bonus XP!`);
       }
 
-      setUser(updatedUser);
-      localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
-      localStorage.setItem('pyflow-xp', newXp.toString());
+      handleUpdateUser(updatedUser);
   };
 
   const handleSubscribe = (tier: SubscriptionTier) => {
       if (!user) return;
       const updatedUser = { ...user, subscriptionTier: tier, isTrial: false }; // Trial ends if subscription starts
-      setUser(updatedUser);
-      localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+      handleUpdateUser(updatedUser);
       alert(`Successfully subscribed to ${tier} plan!`);
       setCurrentView(AppView.DASHBOARD);
   };
@@ -276,8 +274,7 @@ const App: React.FC = () => {
           subscriptionTier: tier, 
           isTrial: false 
       };
-      setUser(updatedUser);
-      localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
+      handleUpdateUser(updatedUser);
       alert(`Redeemed ${cost} XP for ${tier} plan!`);
       setCurrentView(AppView.DASHBOARD);
   };

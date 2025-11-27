@@ -262,7 +262,7 @@ export const generateQuiz = async (language: Language, mode: GameMode = 'TRIVIA'
         return data.questions;
     } catch (error) {
         console.error("Error generating quiz", error);
-        return [];
+        throw error;
     }
 }
 
@@ -349,10 +349,12 @@ export const generateLessonContent = async (topic: string, language: Language): 
             }
         });
         
-        return JSON.parse(response.text || '{}');
+        const data = JSON.parse(response.text || '{}');
+        if (!data.steps || data.steps.length === 0) throw new Error("Invalid Lesson Data");
+        return data;
     } catch (e) {
-        console.error("Lesson generation failed", e);
-        throw e;
+        // Explicitly throw to let component handle fallback
+        throw new Error("Lesson Generation Failed");
     }
 }
 
@@ -377,6 +379,8 @@ export const generateExamPaper = async (level: GameLevel, language: Language, is
         });
 
         const data = JSON.parse(response.text || '{}');
+        if (!data.questions || data.questions.length === 0) throw new Error("Invalid Exam Data");
+
         // Fallback IDs
         return {
             ...data,
@@ -385,7 +389,7 @@ export const generateExamPaper = async (level: GameLevel, language: Language, is
             durationMinutes: data.durationMinutes || 15
         };
     } catch (e) {
-        console.error("Exam generation failed", e);
-        throw e;
+        // Explicitly throw to let component handle fallback
+        throw new Error("Exam Generation Failed");
     }
 }
