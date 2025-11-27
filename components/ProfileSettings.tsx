@@ -26,6 +26,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
     const [gender, setGender] = useState<Gender>(user.gender || 'Prefer not to say');
     const [autoTranslate, setAutoTranslate] = useState(user.autoTranslate || false);
     const [studyReminder, setStudyReminder] = useState(user.studyReminder || '');
+    
+    // Local theme state for deferred saving
+    const [selectedTheme, setSelectedTheme] = useState<ThemeMode>(user.theme);
+    
     const [saved, setSaved] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
     const [refLinkCopied, setRefLinkCopied] = useState(false);
@@ -37,6 +41,8 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Update user object with all fields including the selected theme
         onUpdateUser({
             ...user,
             name,
@@ -44,8 +50,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
             birthday,
             gender,
             autoTranslate,
-            studyReminder
+            studyReminder,
+            theme: selectedTheme // Apply theme only on save
         });
+        
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
     };
@@ -128,34 +136,45 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                                     </select>
                                 </div>
 
-                                {/* Theme Selector */}
+                                {/* Theme Selector (Local State) */}
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                        {user.theme === 'light' ? <Sun className="w-4 h-4 mr-2" /> : <Moon className="w-4 h-4 mr-2" />} 
+                                        {selectedTheme === 'light' ? <Sun className="w-4 h-4 mr-2" /> : selectedTheme === 'dark' ? <Moon className="w-4 h-4 mr-2" /> : <Monitor className="w-4 h-4 mr-2" />} 
                                         {navT.theme}
                                     </label>
                                     <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-600 p-1">
                                         <button
                                             type="button"
-                                            onClick={() => onThemeChange('light')}
-                                            className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-sm font-medium transition-all ${
-                                                user.theme === 'light' 
+                                            onClick={() => setSelectedTheme('light')}
+                                            className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-xs font-medium transition-all ${
+                                                selectedTheme === 'light' 
                                                 ? 'bg-blue-100 text-blue-700 shadow-sm' 
                                                 : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700'
                                             }`}
                                         >
-                                            <Sun className="w-4 h-4 mr-2" /> Light
+                                            <Sun className="w-3 h-3 mr-1" /> Light
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => onThemeChange('dark')}
-                                            className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-sm font-medium transition-all ${
-                                                user.theme === 'dark' 
+                                            onClick={() => setSelectedTheme('dark')}
+                                            className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-xs font-medium transition-all ${
+                                                selectedTheme === 'dark' 
                                                 ? 'bg-slate-700 text-white shadow-sm' 
                                                 : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700'
                                             }`}
                                         >
-                                            <Moon className="w-4 h-4 mr-2" /> Dark
+                                            <Moon className="w-3 h-3 mr-1" /> Dark
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setSelectedTheme('auto')}
+                                            className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-xs font-medium transition-all ${
+                                                selectedTheme === 'auto' 
+                                                ? 'bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-white shadow-sm' 
+                                                : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                            }`}
+                                        >
+                                            <Monitor className="w-3 h-3 mr-1" /> {t.system || 'Auto'}
                                         </button>
                                     </div>
                                 </div>

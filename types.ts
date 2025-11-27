@@ -11,9 +11,9 @@ export type Language =
   | 'Myanmar' 
   | 'Arabic';
 
-export const APP_VERSION = "1.2.2 (Beta)";
+export const APP_VERSION = "1.2.3 (Beta)";
 
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark' | 'auto';
 export type Gender = 'Male' | 'Female' | 'Other' | 'Prefer not to say';
 
 export type MissionPeriod = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';

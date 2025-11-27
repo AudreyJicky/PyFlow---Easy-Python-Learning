@@ -179,8 +179,7 @@ export const generateFlashcards = async (topic: string, level: string, language:
     const data = JSON.parse(response.text || '{"cards": []}');
     return data.cards.map((card: any, index: number) => ({ ...card, id: `card-${Date.now()}-${index}`, level }));
   } catch (error) {
-    console.error("Error generating flashcards:", error);
-    throw error;
+    throw new Error("Flashcard generation failed");
   }
 };
 
@@ -201,8 +200,7 @@ export const analyzeCode = async (code: string, language: Language): Promise<Ana
 
     return JSON.parse(response.text || '{}');
   } catch (error) {
-    console.error("Error analyzing code:", error);
-    throw error;
+    throw new Error("Code analysis failed");
   }
 };
 
@@ -221,13 +219,8 @@ export const getDailyTip = async (language: Language): Promise<DailyTip> => {
     
     return JSON.parse(response.text || '{}');
   } catch (error) {
-    console.error("Error getting daily tip:", error);
-    return {
-      topic: "Print Function",
-      codeSnippet: "print('Hello World!')",
-      explanation: "This displays text on the screen.",
-      funFact: "It's usually the first code you write!"
-    };
+    // Suppress 429/Error logs. UI will handle fallback.
+    throw new Error("Daily Tip API unavailable");
   }
 }
 
@@ -261,8 +254,7 @@ export const generateQuiz = async (language: Language, mode: GameMode = 'TRIVIA'
         const data = JSON.parse(response.text || '{"questions": []}');
         return data.questions;
     } catch (error) {
-        console.error("Error generating quiz", error);
-        throw error;
+        throw new Error("Quiz generation failed");
     }
 }
 
@@ -291,7 +283,7 @@ export const explainTopic = async (topic: string, language: Language, level: str
         
         return response.text || "No explanation available.";
     } catch (error) {
-        return "Sorry, I couldn't load the book content right now.";
+        return "Offline Mode: Content unavailable right now. Please check your internet connection.";
     }
 }
 

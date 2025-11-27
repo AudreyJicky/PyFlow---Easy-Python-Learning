@@ -50,6 +50,30 @@ const App: React.FC = () => {
       { id: 'm_y2', title: '365 Days Streak', xpReward: 10000, isCompleted: false, isCollected: false, type: 'LOGIN', period: 'YEARLY' },
   ];
 
+  const applyTheme = (theme: ThemeMode) => {
+    let isDark = false;
+    if (theme === 'auto') {
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } else {
+        isDark = theme === 'dark';
+    }
+
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  // Theme Persistence Effect
+  // This ensures that whenever the user object updates (e.g. via ProfileSettings save),
+  // the theme is correctly applied to the DOM.
+  useEffect(() => {
+      if (user) {
+          applyTheme(user.theme);
+      }
+  }, [user?.theme]);
+
   // Auto-detect System Theme, Location, and Referral Code on Mount
   useEffect(() => {
     const initializeApp = async () => {
@@ -81,9 +105,8 @@ const App: React.FC = () => {
         setUser(currentUser);
         applyTheme(currentUser.theme);
       } else {
-        // No user logged in: Use system preference
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        applyTheme(systemDark ? 'dark' : 'light');
+        // No user logged in: Use auto
+        applyTheme('auto');
       }
 
       // 2. View & Language persistence
@@ -128,24 +151,25 @@ const App: React.FC = () => {
 
     initializeApp();
 
+    // Listener for system theme changes (Auto Mode)
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemThemeChange = (e: MediaQueryListEvent) => {
-        if (!localStorage.getItem('pyflow-user')) {
-            applyTheme(e.matches ? 'dark' : 'light');
+        // Check if we should respect system theme
+        const savedUserStr = localStorage.getItem('pyflow-user');
+        if (savedUserStr) {
+            const u = JSON.parse(savedUserStr);
+            if (u.theme === 'auto') {
+                applyTheme('auto');
+            }
+        } else {
+            // No user, default is auto
+            applyTheme('auto');
         }
     };
     mediaQuery.addEventListener('change', handleSystemThemeChange);
 
     return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
   }, []);
-
-  const applyTheme = (theme: ThemeMode) => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
 
   const handleLogin = (newUser: UserProfile, method: 'email' | 'phone' | 'google') => {
     const today = new Date().toDateString();
@@ -171,13 +195,13 @@ const App: React.FC = () => {
         lastActiveDate: today,
         missions: newUser.missions || generateMissions(),
         isClockedIn: newUser.isClockedIn || false,
+        theme: newUser.theme || 'auto', // Default to auto for new logins
         ...extraProps
     };
     
     setUser(userWithLocation);
-    if (newUser.theme) {
-        applyTheme(newUser.theme);
-    }
+    applyTheme(userWithLocation.theme);
+    
     localStorage.setItem('pyflow-user', JSON.stringify(userWithLocation));
     localStorage.setItem('pyflow-xp', userWithLocation.xp.toString()); // Init XP
 
@@ -200,8 +224,7 @@ const App: React.FC = () => {
     setUser(null);
     localStorage.removeItem('pyflow-user');
     setCurrentView(AppView.DASHBOARD);
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(systemDark ? 'dark' : 'light');
+    applyTheme('auto'); // Revert to system default on logout
   };
 
   const handleViewChange = (view: AppView) => {
@@ -216,6 +239,9 @@ const App: React.FC = () => {
   };
 
   const handleThemeChange = (mode: ThemeMode) => {
+    // This function now mostly serves as a way to update the user object.
+    // The visual application is handled by the useEffect watching user.theme.
+    // We keep applyTheme here for immediate feedback in other contexts if needed.
     applyTheme(mode);
     if (user) {
         const updatedUser = { ...user, theme: mode };
@@ -234,7 +260,6 @@ const App: React.FC = () => {
       localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
       // Ensure XP is persisted separately for Auth component recovery and consistency
       localStorage.setItem('pyflow-xp', updatedUser.xp.toString()); 
-      applyTheme(updatedUser.theme);
   };
 
   const handleXpGain = (amount: number) => {
