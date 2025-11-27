@@ -17,6 +17,7 @@ import Community from './components/Community';
 import Download from './components/Download';
 import CodeSearch from './components/CodeSearch';
 import Subscription from './components/Subscription';
+import Playground from './components/Playground';
 import { AppView, Language, UserProfile, ThemeMode, SavedAccount, DailyMission, SubscriptionTier } from './types';
 
 const App: React.FC = () => {
@@ -365,6 +366,8 @@ const App: React.FC = () => {
     switch (currentView) {
       case AppView.DASHBOARD:
         return <Dashboard onNavigate={handleViewChange} language={language} user={user} onShowMissions={() => setIsMissionSidebarOpen(true)} />;
+      case AppView.PLAYGROUND:
+        return <Playground language={language} />;
       case AppView.COURSE:
         return <Course language={language} onXpGain={handleXpGain} />;
       case AppView.EXAM:

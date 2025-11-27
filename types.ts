@@ -11,7 +11,7 @@ export type Language =
   | 'Myanmar' 
   | 'Arabic';
 
-export const APP_VERSION = "1.2.3 (Beta)";
+export const APP_VERSION = "1.2.4 (Beta)";
 
 export type ThemeMode = 'light' | 'dark' | 'auto';
 export type Gender = 'Male' | 'Female' | 'Other' | 'Prefer not to say';
@@ -107,6 +107,7 @@ export enum AppView {
   CHAT = 'CHAT',
   ANALYZER = 'ANALYZER',
   SEARCH = 'SEARCH',
+  PLAYGROUND = 'PLAYGROUND',
   PROFILE = 'PROFILE',
   LEADERBOARD = 'LEADERBOARD',
   COMMUNITY = 'COMMUNITY',

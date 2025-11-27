@@ -109,12 +109,11 @@ const LessonContentSchema: Schema = {
                     line: { type: Type.INTEGER },
                     description: { type: Type.STRING },
                     variables: { 
-                        type: Type.OBJECT, 
-                        properties: {
-                            // Map string keys to string values
-                        } 
+                        type: Type.OBJECT,
+                        description: "Map of variable names to values",
+                        nullable: true
                     },
-                    output: { type: Type.STRING }
+                    output: { type: Type.STRING, nullable: true }
                 }
             }
         },
@@ -150,21 +149,20 @@ const ExamPaperSchema: Schema = {
                     options: { type: Type.ARRAY, items: { type: Type.STRING } },
                     correctAnswer: { type: Type.STRING },
                     explanation: { type: Type.STRING },
-                    codeBlock: { type: Type.STRING }
+                    codeBlock: { type: Type.STRING, nullable: true }
                 }
             }
         }
     }
 }
 
-// --- API Functions ---
+// --- API Calls ---
 
 export const generateFlashcards = async (topic: string, level: string, language: Language): Promise<Flashcard[]> => {
   try {
-    const prompt = `Generate 5 Python programming flashcards for the topic: "${topic}". 
-    The difficulty level is ${level}. 
-    Translate definitions and explanations into ${language}.
-    Keep examples simple, fun, and easy to understand for a beginner.`;
+    const prompt = `Generate 5 Python programming flashcards about "${topic}" for a ${level} level learner. 
+    Content must be in ${language}.
+    Return valid JSON matching the schema.`;
 
     const response = await ai.models.generateContent({
       model: modelId,
@@ -172,21 +170,25 @@ export const generateFlashcards = async (topic: string, level: string, language:
       config: {
         responseMimeType: "application/json",
         responseSchema: FlashcardSchema,
-        systemInstruction: `You are an expert Python tutor. You make coding fun. Level: ${level}. Language: ${language}.`
-      }
+      },
     });
 
-    const data = JSON.parse(response.text || '{"cards": []}');
-    return data.cards.map((card: any, index: number) => ({ ...card, id: `card-${Date.now()}-${index}`, level }));
+    const json = JSON.parse(response.text || "{}");
+    if (!json.cards) throw new Error("Invalid API response format");
+    return json.cards;
   } catch (error) {
-    throw new Error("Flashcard generation failed");
+    console.error("Error generating flashcards:", error);
+    throw error;
   }
 };
 
 export const analyzeCode = async (code: string, language: Language): Promise<AnalysisResult> => {
   try {
-    const prompt = `Analyze this Python code: "${code}". 
-    Explain what it does simply in ${language}. Break down key parts.`;
+    const prompt = `Analyze this Python code for a beginner:
+    "${code}"
+    Provide a summary, breakdown of concepts, and a best practice tip.
+    Content must be in ${language}.
+    Return valid JSON matching the schema.`;
 
     const response = await ai.models.generateContent({
       model: modelId,
@@ -194,53 +196,69 @@ export const analyzeCode = async (code: string, language: Language): Promise<Ana
       config: {
         responseMimeType: "application/json",
         responseSchema: AnalysisSchema,
-        systemInstruction: `You are a helpful coding assistant. Explain Python code clearly for beginners in ${language}.`
-      }
+      },
     });
 
-    return JSON.parse(response.text || '{}');
+    const json = JSON.parse(response.text || "{}");
+    if (!json.summary) throw new Error("Invalid API response format");
+    return json;
   } catch (error) {
-    throw new Error("Code analysis failed");
+    console.error("Error analyzing code:", error);
+    throw error;
   }
 };
 
-export const getDailyTip = async (language: Language): Promise<DailyTip> => {
-  try {
-    const prompt = `Give me a fun, easy Python tip or mini-lesson for a beginner. Include a code snippet. Translate explanations to ${language}.`;
-    
-    const response = await ai.models.generateContent({
-      model: modelId,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: DailyTipSchema,
-      }
-    });
-    
-    return JSON.parse(response.text || '{}');
-  } catch (error) {
-    // Suppress 429/Error logs. UI will handle fallback.
-    throw new Error("Daily Tip API unavailable");
-  }
-}
-
-export const generateQuiz = async (language: Language, mode: GameMode = 'TRIVIA', level: GameLevel = 'Beginner'): Promise<QuizQuestion[]> => {
-    try {
-        let prompt = "";
-        
-        switch (mode) {
-            case 'BUG_HUNTER':
-                prompt = `Generate 3 "Find the Bug" questions for Python. Level: ${level}. Language: ${language}. 
-                Provide a broken code snippet in 'codeBlock' and options describing the error or the fix.`;
-                break;
-            case 'SYNTAX_SPRINT':
-                prompt = `Generate 3 fast, short syntax questions for Python. Level: ${level}. Language: ${language}.
-                Focus on operators, keywords, and basic punctuation.`;
-                break;
-            default:
-                prompt = `Generate 3 multiple choice questions about Python concepts. Level: ${level}. Language: ${language}.`;
-                break;
+export const createChatSession = (history: any[], language: Language) => {
+    return ai.chats.create({
+        model: modelId,
+        history: history,
+        config: {
+            systemInstruction: `You are Py-Sensei, a friendly and encouraging Python tutor. 
+            Your goal is to explain concepts simply to beginners. 
+            Always answer in ${language}. 
+            If the user sends code, explain it. 
+            If they ask for a challenge, give them a small coding task.
+            Keep answers concise and helpful.`
         }
+    });
+};
+
+export const getDailyTip = async (language: Language): Promise<DailyTip> => {
+    try {
+        const prompt = `Generate a fun and useful "Daily Python Tip" for a beginner/intermediate learner.
+        Include a code snippet, explanation, and a fun fact.
+        Content must be in ${language}.
+        Return valid JSON matching the schema.`;
+
+        const response = await ai.models.generateContent({
+            model: modelId,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: DailyTipSchema,
+            },
+        });
+
+        const json = JSON.parse(response.text || "{}");
+        if (!json.topic) throw new Error("Invalid API response format");
+        return json;
+    } catch (error) {
+        // Suppress console spam for 429 and specific errors
+        const errString = String(error);
+        if (errString.includes("429") || errString.includes("quota")) {
+             // Silent fail allows UI to use fallback
+             throw new Error("Quota Exceeded");
+        }
+        throw error;
+    }
+};
+
+export const generateQuiz = async (language: Language, mode: GameMode, level: GameLevel): Promise<QuizQuestion[]> => {
+    try {
+        const prompt = `Generate 5 Python quiz questions for a ${level} learner. 
+        Mode: ${mode} (Trivia = General knowledge, Bug Hunter = Find errors in code, Syntax Sprint = Fast basic syntax).
+        Content must be in ${language}.
+        Return valid JSON matching the schema.`;
 
         const response = await ai.models.generateContent({
             model: modelId,
@@ -248,140 +266,152 @@ export const generateQuiz = async (language: Language, mode: GameMode = 'TRIVIA'
             config: {
                 responseMimeType: "application/json",
                 responseSchema: QuizSchema,
-            }
+            },
         });
 
-        const data = JSON.parse(response.text || '{"questions": []}');
-        return data.questions;
+        const json = JSON.parse(response.text || "{}");
+        if (!json.questions) throw new Error("Invalid API response format");
+        return json.questions;
     } catch (error) {
-        throw new Error("Quiz generation failed");
-    }
-}
-
-export const explainTopic = async (topic: string, language: Language, level: string = "Beginner"): Promise<string> => {
-    try {
-        let systemPrompt = "";
-        
-        if (level === "Professional") {
-            systemPrompt = `You are a Senior Python Architect. Explain "${topic}" deeply in ${language}.
-            Include: 1. Technical Definition. 2. Advanced Syntax. 3. Best Practices. 4. Real-world example. Use Markdown.`;
-        } else if (level === "Intermediate") {
-            systemPrompt = `You are a Python Mentor. Explain "${topic}" in ${language}.
-            Include: 1. Concept. 2. Code Examples. 3. Pitfalls. Use Markdown.`;
-        } else {
-            systemPrompt = `You are a Fun Python Tutor for beginners. Explain "${topic}" in ${language}.
-            Include: 1. Simple Analogy. 2. Easy Syntax. 3. Fun Example. Use Markdown.`;
+        const errString = String(error);
+        if (errString.includes("429") || errString.includes("quota")) {
+             throw new Error("Quota Exceeded");
         }
+        throw error;
+    }
+};
+
+export const explainTopic = async (topic: string, language: Language, level: string): Promise<string> => {
+    try {
+        const prompt = `Write a textbook entry about Python "${topic}".
+        Target Audience: ${level} (Beginner = Simple metaphors, Intermediate = Technical details, Professional = Deep dive, best practices, performance).
+        Language: ${language}.
+        Format: Markdown.
+        Include:
+        - Introduction
+        - Syntax Example
+        - Real-world Use Case
+        - Common Pitfalls`;
 
         const response = await ai.models.generateContent({
             model: modelId,
-            contents: `Explain the Python topic: ${topic}`,
-            config: {
-                systemInstruction: systemPrompt
-            }
+            contents: prompt,
         });
-        
-        return response.text || "No explanation available.";
+
+        if (!response.text) throw new Error("Empty response");
+        return response.text;
     } catch (error) {
-        return "Offline Mode: Content unavailable right now. Please check your internet connection.";
+        const errString = String(error);
+        if (errString.includes("429") || errString.includes("quota")) {
+             throw new Error("Quota Exceeded");
+        }
+        throw error;
     }
 }
 
 export const searchCodeConcept = async (term: string, language: Language): Promise<SearchResult> => {
     try {
-        const prompt = `Define the Python term/function: "${term}". 
-        Language: ${language}. Provide syntax, a simple example, and related terms.`;
-
-        const response = await ai.models.generateContent({
-            model: modelId,
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: SearchSchema
-            }
-        });
-
-        return JSON.parse(response.text || '{}');
-    } catch (error) {
-        throw new Error("Search failed");
-    }
-}
-
-export const createChatSession = (history: any[] = [], language: Language) => {
-    return ai.chats.create({
-        model: modelId,
-        history: history,
-        config: {
-            systemInstruction: `You are 'Py-Sensei', a fun, enthusiastic Python tutor for beginners. 
-            You explain concepts using simple analogies. 
-            You speak in ${language}, but keep Python keywords in English. 
-            If the user sends code, help them fix it. 
-            Always be encouraging!`,
-        }
-    });
-}
-
-// --- NEW COURSE GENERATOR ---
-export const generateLessonContent = async (topic: string, language: Language): Promise<LessonContent> => {
-    try {
-        const prompt = `Create a step-by-step visual lesson for Python topic: "${topic}".
+        const prompt = `Define the Python term "${term}".
         Language: ${language}.
-        Structure:
-        1. Title & simple concept explanation.
-        2. A simple code snippet (3-6 lines).
-        3. 3-4 steps describing how the code runs line-by-line (for visualization), including variable state changes.
-        4. A 2-question mini quiz.`;
+        Return valid JSON matching the schema.
+        If the term is not related to Python or programming, define it generally but mention it's not a keyword.`;
 
         const response = await ai.models.generateContent({
             model: modelId,
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: LessonContentSchema
-            }
+                responseSchema: SearchSchema,
+            },
         });
-        
-        const data = JSON.parse(response.text || '{}');
-        if (!data.steps || data.steps.length === 0) throw new Error("Invalid Lesson Data");
-        return data;
-    } catch (e) {
-        // Explicitly throw to let component handle fallback
-        throw new Error("Lesson Generation Failed");
+
+        const json = JSON.parse(response.text || "{}");
+        if (!json.term) throw new Error("Invalid API response format");
+        return json;
+    } catch (error) {
+        const errString = String(error);
+        if (errString.includes("429") || errString.includes("quota")) {
+             throw new Error("Quota Exceeded");
+        }
+        throw error;
     }
 }
 
-// --- NEW EXAM GENERATOR ---
-export const generateExamPaper = async (level: GameLevel, language: Language, isYearly: boolean): Promise<ExamPaper> => {
+export const generateLessonContent = async (title: string, language: Language): Promise<LessonContent> => {
     try {
-        const year = new Date().getFullYear();
-        const type = isYearly ? `Mock Exam Paper ${year}` : 'Topic Practice Test';
-        
-        const prompt = `Generate a ${type} for Python. Level: ${level}. Language: ${language}.
-        Include 5 challenging multiple choice questions.
-        If it's a mock exam, cover mixed topics (Loops, Functions, Errors).
-        If practice, focus on a specific random topic.`;
+        const prompt = `Create a Python lesson titled "${title}".
+        Language: ${language}.
+        The "code" field should be a small, executable snippet (3-6 lines) demonstrating the concept.
+        The "steps" array should explain execution line-by-line for a visualizer.
+        Return valid JSON matching the schema.`;
 
         const response = await ai.models.generateContent({
             model: modelId,
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: ExamPaperSchema
-            }
+                responseSchema: LessonContentSchema,
+            },
         });
 
-        const data = JSON.parse(response.text || '{}');
-        if (!data.questions || data.questions.length === 0) throw new Error("Invalid Exam Data");
+        const json = JSON.parse(response.text || "{}");
+        if (!json.title) throw new Error("Invalid API response format");
+        return json;
+    } catch (error) {
+        const errString = String(error);
+        if (errString.includes("429") || errString.includes("quota")) {
+             throw new Error("Quota Exceeded");
+        }
+        throw error;
+    }
+}
 
-        // Fallback IDs
-        return {
-            ...data,
-            id: `exam-${Date.now()}`,
-            year: data.year || year.toString(),
-            durationMinutes: data.durationMinutes || 15
-        };
-    } catch (e) {
-        // Explicitly throw to let component handle fallback
-        throw new Error("Exam Generation Failed");
+export const generateExamPaper = async (level: string, language: Language, isMock: boolean): Promise<ExamPaper> => {
+    try {
+        const prompt = `Create a Python ${isMock ? 'Full Mock Exam' : 'Topic Practice Paper'} for ${level} level.
+        Language: ${language}.
+        Duration: ${isMock ? '20' : '10'} minutes.
+        Questions: 5 multiple choice questions.
+        Return valid JSON matching the schema.`;
+
+        const response = await ai.models.generateContent({
+            model: modelId,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: ExamPaperSchema,
+            },
+        });
+
+        const json = JSON.parse(response.text || "{}");
+        if (!json.questions) throw new Error("Invalid API response format");
+        return json;
+    } catch (error) {
+        const errString = String(error);
+        if (errString.includes("429") || errString.includes("quota")) {
+             throw new Error("Quota Exceeded");
+        }
+        throw error;
+    }
+}
+
+export const runPythonCode = async (code: string): Promise<string> => {
+    try {
+        // Use the model to act as a Python interpreter
+        const prompt = `Act strictly as a Python interpreter. Execute the following code and return ONLY the output.
+        Do not provide explanations or markdown formatting unless it's part of the print output.
+        If there is an error, return the Python error message.
+        
+        Code:
+        ${code}`;
+
+        const response = await ai.models.generateContent({
+            model: modelId,
+            contents: prompt,
+        });
+
+        return response.text || "";
+    } catch (error) {
+        return `Error: ${error}`;
     }
 }

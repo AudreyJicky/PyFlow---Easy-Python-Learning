@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppView, Language, UserProfile, ThemeMode, APP_VERSION } from '../types';
 import { translations } from '../translations';
-import { LayoutDashboard, Layers, MessageCircle, Code2, Menu, X, Terminal, BookOpen, PenTool, Gamepad2, Camera, Trophy, Users, Download, Settings, Search, GraduationCap, FileCheck, Crown, MessageSquarePlus } from 'lucide-react';
+import { LayoutDashboard, Layers, MessageCircle, Code2, Menu, X, Terminal, BookOpen, PenTool, Gamepad2, Camera, Trophy, Users, Download, Settings, Search, GraduationCap, FileCheck, Crown, MessageSquarePlus, Play } from 'lucide-react';
 import FeedbackModal from './FeedbackModal';
 import MissionSidebar from './MissionSidebar';
 
@@ -54,6 +54,7 @@ const Layout: React.FC<LayoutProps> = ({
 
   const navItems = [
     { id: AppView.DASHBOARD, label: t.nav.dashboard, icon: LayoutDashboard },
+    { id: AppView.PLAYGROUND, label: t.nav.playground, icon: Play }, // Added Playground
     { id: AppView.COURSE, label: t.nav.course, icon: GraduationCap },
     { id: AppView.EXAM, label: t.nav.exam, icon: FileCheck },
     { id: AppView.REFERENCE, label: t.nav.reference, icon: BookOpen },
