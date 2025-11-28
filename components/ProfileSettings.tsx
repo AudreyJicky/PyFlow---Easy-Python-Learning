@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserProfile, Gender, ThemeMode, Language } from '../types';
 import { translations } from '../translations';
-import { Save, User, Mail, Calendar, Heart, Camera, Check, MapPin, Globe, Bell, MessageSquare, Link as LinkIcon, Copy, Moon, Sun, Monitor, Languages, MessageSquarePlus, LogOut, Gift, Share2 } from 'lucide-react';
+import { Save, User, Mail, Calendar, Heart, Camera, Check, MapPin, Globe, Bell, MessageSquare, Link as LinkIcon, Copy, Moon, Sun, Monitor, Languages, MessageSquarePlus, LogOut, Gift, Share2, RefreshCw, Network } from 'lucide-react';
 
 interface ProfileSettingsProps {
     user: UserProfile;
@@ -33,11 +33,19 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
     const [saved, setSaved] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
     const [refLinkCopied, setRefLinkCopied] = useState(false);
+    const [isDetecting, setIsDetecting] = useState(false);
 
     const languages: Language[] = [
         'English', 'Chinese (Simplified)', 'Malay', 'Japanese', 'Korean', 
         'Indonesian', 'Thai', 'Vietnamese', 'Myanmar', 'Arabic'
     ];
+
+    // Auto-detect location on mount if missing
+    useEffect(() => {
+        if (!user.country || user.country === 'Unknown') {
+            detectNetworkLocation();
+        }
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -81,6 +89,39 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
         setRefLinkCopied(true);
         onReferral(); // Trigger XP gain logic
         setTimeout(() => setRefLinkCopied(false), 2000);
+    }
+
+    const detectNetworkLocation = async () => {
+        setIsDetecting(true);
+        try {
+            // Try Primary IP Service
+            const res = await fetch('https://ipapi.co/json/');
+            if(res.ok) {
+                const data = await res.json();
+                if(data.country_name) {
+                    onUpdateUser({ ...user, country: data.country_name });
+                    return;
+                }
+            }
+            throw new Error("Primary failed");
+        } catch(e) {
+            // Try Secondary IP Service
+            try {
+                const res = await fetch('https://ipwho.is/');
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.country) {
+                        onUpdateUser({ ...user, country: data.country });
+                        return;
+                    }
+                }
+                throw new Error("Secondary failed");
+            } catch(e2) {
+                console.warn("Location detection failed (Network Blocked)");
+            }
+        } finally {
+            setIsDetecting(false);
+        }
     }
 
     return (
@@ -237,20 +278,32 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onUpdateUser, l
                              {/* Location Field */}
                              <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                                    <Globe className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.locationDetect || 'Location (Detected via Network IP)'}
+                                    <Globe className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" /> {t.locationDetect || 'Location'}
+                                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        <Network className="w-3 h-3 mr-1" /> Network IP
+                                    </span>
                                 </label>
                                 <div className="relative">
                                     <input
                                         type="text"
-                                        value={user.country || 'Detecting...'}
+                                        value={isDetecting ? 'Detecting via IP...' : (user.country || 'Unknown')}
                                         disabled
-                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 cursor-not-allowed pr-12"
                                     />
-                                    {user.country && (
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 rtl:right-auto rtl:left-3">
+                                    {user.country && !isDetecting && (
+                                        <div className="absolute right-10 top-1/2 -translate-y-1/2 text-green-500 rtl:right-auto rtl:left-10">
                                             <Check className="w-4 h-4" />
                                         </div>
                                     )}
+                                    <button 
+                                        type="button"
+                                        onClick={detectNetworkLocation}
+                                        disabled={isDetecting}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition-colors disabled:opacity-50 rtl:right-auto rtl:left-2"
+                                        title={t.refreshLocation || "Refresh Location"}
+                                    >
+                                        <RefreshCw className={`w-4 h-4 ${isDetecting ? 'animate-spin' : ''}`} />
+                                    </button>
                                 </div>
                             </div>
                         </div>

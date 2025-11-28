@@ -67,8 +67,6 @@ const App: React.FC = () => {
   };
 
   // Theme Persistence Effect
-  // This ensures that whenever the user object updates (e.g. via ProfileSettings save),
-  // the theme is correctly applied to the DOM.
   useEffect(() => {
       if (user) {
           applyTheme(user.theme);
@@ -116,7 +114,7 @@ const App: React.FC = () => {
       if (savedView) setCurrentView(savedView as AppView);
       if (savedLang) setLanguage(savedLang as Language);
 
-      // 3. Location Detection (IP-based) with Fallback
+      // 3. Location Detection (IP-based) with Robust Fallback
       let country = '';
       try {
         const res = await fetch('https://ipapi.co/json/');
@@ -140,7 +138,8 @@ const App: React.FC = () => {
 
       if (country) {
           setDetectedLocation(country);
-          if (currentUser && !currentUser.country) {
+          // AUTO FIX: If user exists but has no country or 'Unknown', update it
+          if (currentUser && (!currentUser.country || currentUser.country === 'Unknown')) {
               const updatedUser = { ...currentUser, country: country };
               setUser(updatedUser);
               localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
@@ -192,7 +191,7 @@ const App: React.FC = () => {
 
     const userWithLocation: UserProfile = {
         ...newUser,
-        country: newUser.country || detectedLocation,
+        country: newUser.country || detectedLocation || 'Unknown', // Fallback to detected or Unknown
         lastActiveDate: today,
         missions: newUser.missions || generateMissions(),
         isClockedIn: newUser.isClockedIn || false,
@@ -240,9 +239,6 @@ const App: React.FC = () => {
   };
 
   const handleThemeChange = (mode: ThemeMode) => {
-    // This function now mostly serves as a way to update the user object.
-    // The visual application is handled by the useEffect watching user.theme.
-    // We keep applyTheme here for immediate feedback in other contexts if needed.
     applyTheme(mode);
     if (user) {
         const updatedUser = { ...user, theme: mode };
@@ -259,7 +255,6 @@ const App: React.FC = () => {
   const handleUpdateUser = (updatedUser: UserProfile) => {
       setUser(updatedUser);
       localStorage.setItem('pyflow-user', JSON.stringify(updatedUser));
-      // Ensure XP is persisted separately for Auth component recovery and consistency
       localStorage.setItem('pyflow-xp', updatedUser.xp.toString()); 
   };
 
@@ -270,7 +265,6 @@ const App: React.FC = () => {
       let updatedUser = { ...user, xp: newXp };
 
       // --- CHECK REFERRAL MILESTONE (1000 XP) ---
-      // If user has > 1000 XP, was referred, and hasn't claimed the bonus yet
       if (newXp >= 1000 && user.referredBy && !user.referralBonusClaimed) {
           updatedUser.xp += 100; // Bonus
           updatedUser.referralBonusClaimed = true;
@@ -310,7 +304,6 @@ const App: React.FC = () => {
   const handleClockIn = () => {
     if (!user || user.isClockedIn) return;
     
-    // Update mission status for clock in
     const updatedMissions = user.missions?.map(m => 
         m.type === 'LOGIN' ? { ...m, isCompleted: true } : m
     );
@@ -339,8 +332,6 @@ const App: React.FC = () => {
 
   const handleReferral = () => {
       if (!user) return;
-      // Mark referral mission as complete for the *referrer* immediately for this demo
-      // In a real backend app, this would be updated via server push when the friend reaches 1000 XP
       const updatedMissions = user.missions?.map(m => 
           m.type === 'REFERRAL' ? { ...m, isCompleted: true } : m
       );

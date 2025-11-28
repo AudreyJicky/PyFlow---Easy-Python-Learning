@@ -23,7 +23,11 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
     const [feedback, setFeedback] = useState<PlaygroundFeedback | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-    const handleRun = async () => {
+    const handleRun = async (codeOverride?: string | React.MouseEvent) => {
+        // If called from button click (event object) or undefined, use state 'code'. 
+        // If called with string, use that (for Auto Fix).
+        const sourceCode = typeof codeOverride === 'string' ? codeOverride : code;
+
         setIsRunning(true);
         setOutput("");
         setFeedback(null); // Reset previous feedback
@@ -33,7 +37,7 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
 
         // --- ZERO LATENCY LOCAL EXECUTION (Simulation) ---
         // Basic regex to handle simple print and math for instant feedback
-        const trimmed = code.trim();
+        const trimmed = sourceCode.trim();
         const printRegex = /^print\s*\((['"])(.*?)\1\)$/;
         const printMathRegex = /^print\s*\(([^)]+)\)$/; // Catches print(1+1)
         const match = trimmed.match(printRegex);
@@ -47,7 +51,7 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
             execResult = match[2];
             setOutput(execResult);
             setIsRunning(false);
-            handleAnalyze(execResult); 
+            handleAnalyze(execResult, sourceCode); 
             return;
         } else if (mathMatch && !userInput && !hasInputCall) {
             // Case 2: Math inside print -> print(10 + 5)
@@ -59,7 +63,7 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
                      execResult = String(eval(content));
                      setOutput(execResult);
                      setIsRunning(false);
-                     handleAnalyze(execResult);
+                     handleAnalyze(execResult, sourceCode);
                      return;
                  } catch (e) {
                      // Fallthrough to AI if eval fails
@@ -69,23 +73,24 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
 
         // --- AI EXECUTION (Complex Code & Input Handling) ---
         try {
-            execResult = await runPythonCode(code, userInput);
+            execResult = await runPythonCode(sourceCode, userInput);
             setOutput(execResult);
-            handleAnalyze(execResult); // Always trigger analysis automatically
+            handleAnalyze(execResult, sourceCode); // Always trigger analysis automatically
 
         } catch (e) {
             const errStr = "Error: Could not execute code.";
             setOutput(errStr);
-            handleAnalyze(errStr);
+            handleAnalyze(errStr, sourceCode);
         } finally {
             setIsRunning(false);
         }
     };
 
-    const handleAnalyze = async (currentOutput: string) => {
+    const handleAnalyze = async (currentOutput: string, codeToAnalyze?: string) => {
+        const sourceCode = codeToAnalyze || code;
         setIsAnalyzing(true);
         try {
-            const result = await getCodeFeedback(code, currentOutput, language);
+            const result = await getCodeFeedback(sourceCode, currentOutput, language);
             setFeedback(result);
             if (result.isError) {
                 setActiveTab('FIX'); // Auto-switch to fix tab if error
@@ -141,7 +146,7 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
                                 <Trash2 className="w-4 h-4" />
                             </button>
                             <button 
-                                onClick={handleRun}
+                                onClick={() => handleRun()}
                                 disabled={isRunning}
                                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center transition-all disabled:opacity-50"
                             >
@@ -320,7 +325,11 @@ const Playground: React.FC<PlaygroundProps> = ({ language }) => {
                                                     {feedback.fixedCode}
                                                 </pre>
                                                 <button 
-                                                    onClick={() => { setCode(feedback.fixedCode || ""); setActiveTab('EXPLAIN'); }}
+                                                    onClick={() => { 
+                                                        const fixed = feedback.fixedCode || "";
+                                                        setCode(fixed); 
+                                                        handleRun(fixed); // Auto-Run Fixed Code
+                                                    }}
                                                     className="mt-3 w-full bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-700 dark:text-red-200 py-2 rounded-lg text-xs font-bold transition-colors"
                                                 >
                                                     Apply Fix

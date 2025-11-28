@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getDailyTip } from '../services/geminiService';
 import { DailyTip, Language, AppView, UserProfile } from '../types';
 import { translations } from '../translations';
-import { Sparkles, Code, ArrowRight, Layers, Terminal, BookOpen, Gamepad2, PenTool } from 'lucide-react';
+import { Sparkles, Code, ArrowRight, Layers, Terminal, BookOpen, Gamepad2, PenTool, MapPin } from 'lucide-react';
 
 interface DashboardProps {
     onNavigate: (view: AppView) => void;
@@ -87,8 +87,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, language, user, onSho
         <div className="space-y-8">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">
+                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2 flex items-center flex-wrap gap-3">
                         {t.hello}, {user.name}! 👋
+                        {user.country && (
+                            <span className="text-xs font-medium bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-1 rounded-full text-slate-500 dark:text-slate-300 flex items-center shadow-sm">
+                                <MapPin className="w-3 h-3 mr-1 text-blue-500" /> {user.country}
+                            </span>
+                        )}
                     </h2>
                     <p className="text-slate-500 dark:text-slate-400">{t.subtitle}</p>
                 </div>
