@@ -191,6 +191,15 @@ export interface SearchResult {
     related: string[];
 }
 
+export interface PlaygroundFeedback {
+    explanation: string;
+    tip: string;
+    hint: string;
+    fixedCode?: string;
+    isError: boolean;
+    example?: string;
+}
+
 export type GameMode = 'TRIVIA' | 'BUG_HUNTER' | 'SYNTAX_SPRINT';
 export type GameLevel = 'Beginner' | 'Intermediate' | 'Professional';
 
